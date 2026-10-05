@@ -1,26 +1,92 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-plum: #604F6F;
+  --color-burgundy: #641F32;
+  --color-wine: #7D3048;
+  --color-emerald: #164A43;
+  --color-royal: #253B70;
+  --color-terracotta: #B17165;
+  --color-champagne: #C7A66A;
+  --color-cream: #F7F0E8;
+  --color-ivory: #FCFAF7;
+  --color-charcoal: #242124;
+  --color-border: #E9E3DD;
+
+  --font-sans: var(--font-sans), sans-serif;
+  --font-display: var(--font-display), serif;
+}
+
+:root {
+  --background: #F4EFE8;
+  --foreground: #171615;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #171615;
+    --foreground: #F4EFE8;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 400;
+  }
+}
+
+@layer components {
+  .container-luxury {
+    width: min(100% - 80px, 1680px);
+    margin-inline: auto;
+  }
+  @media (max-width: 768px) {
+    .container-luxury {
+      width: calc(100% - 40px);
+    }
+  }
+  
+  .btn-primary {
+    @apply bg-[#171413] text-[#F6F1EA] px-10 py-4 text-[11px] tracking-[0.15em] font-bold uppercase transition-colors duration-300 hover:bg-[#B89A67] hover:text-[#171413];
+  }
+  
+  .btn-secondary {
+    @apply bg-transparent border border-[#171413] text-[#171413] px-10 py-4 text-[11px] tracking-[0.15em] font-bold uppercase transition-colors duration-300 hover:bg-[#171413] hover:text-[#F6F1EA];
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-100%); }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
+  display: flex;
+  min-width: 200%;
 }
