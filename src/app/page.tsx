@@ -6,6 +6,11 @@ import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import { SmartImage } from "@/components/ui/SmartImage";
 import { CategoryStrip } from "@/components/header/CategoryStrip";
 import { HeroSlider } from "@/components/home/HeroSlider";
+import { PromoGrid } from "@/components/home/PromoGrid";
+import { NewProducts } from "@/components/home/NewProducts";
+import { DealsAndBestSeller } from "@/components/home/DealsAndBestSeller";
+import { PromoTestimonials } from "@/components/home/PromoTestimonials";
+import { BlogSection } from "@/components/home/BlogSection";
 import { products } from "@/data/products";
 import { Reveal } from "@/components/ui/Reveal";
 import { ImageReveal } from "@/components/ui/ImageReveal";
@@ -49,14 +54,14 @@ export default function Home() {
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="fixed inset-0 z-[9999] bg-[#FCFAF7] flex items-center justify-center pointer-events-none"
+            className="fixed inset-0 z-[9999] bg-[#080808] flex items-center justify-center pointer-events-none"
           >
             <motion.h1 
               initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 1.04 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="text-4xl md:text-6xl font-display uppercase tracking-[0.2em] text-[#242124]"
+              className="text-4xl md:text-6xl font-display uppercase tracking-[0.2em] text-[#F5F0E6]"
             >
               YATYIA
             </motion.h1>
@@ -64,101 +69,38 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      <div className="bg-[#FCFAF7] text-[#242124] overflow-hidden">
+      <div className="bg-[#080808] text-[#F5F0E6] overflow-hidden">
         
-        {/* 2. HERO IMAGE CINEMATIC REVEAL & PARALLAX */}
-        <section className="relative w-full h-screen min-h-[700px] overflow-hidden flex items-center justify-center bg-[#242124]">
-          <motion.div 
-            style={{ y: heroImageY, scale: heroScale, opacity: heroOpacity }} 
-            className="absolute inset-0 z-0 origin-center"
-          >
-            <motion.div
-              initial={{ opacity: 0.85, scale: 1.08 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.6, ease: [0.33, 1, 0.68, 1], delay: 0.2 }}
-              className="w-full h-full"
-            >
-              <SmartImage 
-                src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=1920&q=80" 
-                alt="Yatiya Couture" 
-                fill 
-                className="object-cover opacity-90"
-                priority
-              />
-            </motion.div>
-          </motion.div>
-          
-          <div className="absolute inset-0 bg-gradient-to-b from-[#242124]/30 via-transparent to-[#242124]/30 z-0" />
-          
-          <motion.div 
-            style={{ y: heroTextY }} 
-            className="relative z-10 flex flex-col items-center text-center px-6 max-w-3xl mt-16"
-          >
-            <motion.span 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
-              className="text-[10px] font-sans font-bold tracking-[0.25em] text-[#FCFAF7] uppercase mb-6 block"
-            >
-              The New Season
-            </motion.span>
-            
-            <motion.h1 
-              initial={{ opacity: 0, y: 20, letterSpacing: "0em" }}
-              animate={{ opacity: 1, y: 0, letterSpacing: "0.02em" }}
-              transition={{ duration: 1, delay: 0.65, ease: "easeOut" }}
-              className="text-6xl md:text-8xl font-display text-[#FCFAF7] leading-[0.9] mb-8"
-            >
-              THE ART<br/>OF DRESSING
-            </motion.h1>
-            
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
-              className="text-[14px] md:text-[15px] font-sans text-[#FCFAF7]/90 leading-relaxed mb-10 max-w-lg mx-auto"
-            >
-              Contemporary silhouettes, timeless craftsmanship and occasion-ready pieces designed for the modern woman.
-            </motion.p>
-            
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.95, ease: "easeOut" }}
-              className="flex flex-col sm:flex-row gap-6"
-            >
-              <Link 
-                href="/new-arrivals"
-                className="border border-[#FCFAF7]/40 text-[#FCFAF7] px-8 py-4 text-[11px] font-sans tracking-[0.2em] font-bold uppercase hover:bg-[#FCFAF7] hover:text-[#242124] transition-colors duration-400"
-              >
-                EXPLORE NEW ARRIVALS
-              </Link>
-              <Link 
-                href="/collections/women"
-                className="bg-[#FCFAF7] text-[#242124] border border-[#FCFAF7] px-8 py-4 text-[11px] font-sans tracking-[0.2em] font-bold uppercase hover:bg-[#242124] hover:border-[#242124] hover:text-[#FCFAF7] transition-colors duration-400"
-              >
-                SHOP THE COLLECTION
-              </Link>
-            </motion.div>
-          </motion.div>
-        </section>
+        {/* 2. MAIN HERO SLIDER */}
+        <HeroSlider />
+
+        {/* PROMO GRID SECTION */}
+        <PromoGrid />
+
+        {/* NEW PRODUCTS SECTION */}
+        <NewProducts />
+
+        {/* DEALS AND BEST SELLER SECTION */}
+        <DealsAndBestSeller />
+
+        {/* PROMO & TESTIMONIALS SECTION */}
+        <PromoTestimonials />
+
+        {/* WIDE PROMO & BLOG SECTION */}
+        <BlogSection />
+
+
 
         {/* 3. CATEGORY SECTION */}
         <Reveal direction="up" delay={0.1} duration={1}>
           <CategoryStrip />
         </Reveal>
-
-        {/* 4. LEHENGA EDIT SLIDER */}
-        <Reveal direction="up" duration={1.2}>
-          <HeroSlider />
-        </Reveal>
-
         {/* 5. SAREE / DRAPE EDIT (Asymmetric + Parallax) */}
-        <section className="py-24 bg-[#FCFAF7] overflow-hidden">
+        <section className="py-24 bg-[#080808] overflow-hidden">
           <div className="max-w-[1400px] mx-auto px-6 flex flex-col md:flex-row items-center gap-16 md:gap-24">
             <div className="w-full md:w-7/12">
               <Reveal direction="left" duration={1.2}>
-                <div className="w-full aspect-[4/5] relative bg-[#F7F0E8] overflow-hidden group">
+                <div className="w-full aspect-[4/5] relative bg-[#101010] overflow-hidden group">
                   <motion.div className="w-full h-full origin-center" whileHover={{ scale: 1.03 }} transition={{ duration: 0.8, ease: "easeOut" }}>
                     <SmartImage 
                       src="https://images.unsplash.com/photo-1485230405346-71acb9518d9c?auto=format&fit=crop&w=1200&q=80" 
@@ -172,16 +114,16 @@ export default function Home() {
             </div>
             <div className="w-full md:w-5/12 flex flex-col items-start">
               <Reveal direction="right" delay={0.2} duration={1}>
-                <span className="text-[10px] font-sans font-bold tracking-[0.2em] text-[#641F32] uppercase mb-6 block">Focus</span>
-                <h2 className="text-5xl md:text-6xl font-display text-[#242124] mb-8 leading-[1.1]">
+                <span className="text-[10px] font-sans font-bold tracking-[0.2em] text-yatiya-gold uppercase mb-6 block">Focus</span>
+                <h2 className="text-5xl md:text-6xl font-display text-[#F5F0E6] mb-8 leading-[1.1]">
                   THE DRAPE<br/>EDIT
                 </h2>
-                <p className="text-[15px] font-sans text-[#242124]/80 leading-relaxed mb-10 max-w-md">
+                <p className="text-[15px] font-sans text-[#CFC6B5] leading-relaxed mb-10 max-w-md">
                   Timeless drapes, reimagined for now. Fluid silhouettes crafted from weightless fabrics that move beautifully with every step.
                 </p>
                 <Link 
                   href="/collections/drapes"
-                  className="border border-[#242124] text-[#242124] px-10 py-4 text-[11px] font-sans tracking-[0.2em] font-bold uppercase hover:bg-[#242124] hover:text-[#FCFAF7] transition-colors duration-400"
+                  className="border border-yatiya-gold text-yatiya-gold hover:bg-yatiya-gold hover:text-[#F5F0E6] px-10 py-4 text-[11px] font-sans tracking-[0.2em] font-bold uppercase hover:bg-[#D6BC7A] hover:text-[#080808] transition-colors duration-400"
                 >
                   EXPLORE SAREES
                 </Link>
@@ -191,7 +133,7 @@ export default function Home() {
         </section>
 
         {/* 6. DARK EDITORIAL CAMPAIGN - THE BRIDAL EDIT */}
-        <section className="relative w-full h-[85vh] flex items-center justify-center bg-[#641F32] overflow-hidden">
+        <section className="relative w-full h-[85vh] flex items-center justify-center bg-yatiya-black-soft overflow-hidden">
           <ImageReveal className="absolute inset-0">
             <SmartImage 
               src="https://images.unsplash.com/photo-1610189044238-7bb79e0004cc?auto=format&fit=crop&w=1920&q=80" 
@@ -203,12 +145,12 @@ export default function Home() {
           
           <div className="relative z-10 text-center px-6">
             <Reveal direction="up" duration={1.2}>
-              <span className="text-[11px] font-sans font-bold tracking-[0.2em] text-[#C7A66A] uppercase mb-6 block">A Bridal Story</span>
-              <h2 className="text-5xl md:text-8xl font-display text-[#FCFAF7] mb-6">THE BRIDAL EDIT</h2>
-              <p className="text-[14px] md:text-[15px] font-sans text-[#FCFAF7]/90 mb-10 tracking-widest uppercase max-w-lg mx-auto">For moments that become memories. Exquisite handwork and timeless elegance.</p>
+              <span className="text-[11px] font-sans font-bold tracking-[0.2em] text-yatiya-gold uppercase mb-6 block">A Bridal Story</span>
+              <h2 className="text-5xl md:text-8xl font-display text-[#F5F0E6] mb-6">THE BRIDAL EDIT</h2>
+              <p className="text-[14px] md:text-[15px] font-sans text-[#F5F0E6] mb-10 tracking-widest uppercase max-w-lg mx-auto">For moments that become memories. Exquisite handwork and timeless elegance.</p>
               <Link 
                 href="/collections/bridal"
-                className="border border-[#C7A66A] text-[#C7A66A] px-10 py-4 text-[11px] font-sans tracking-[0.2em] font-bold uppercase hover:bg-[#C7A66A] hover:text-[#641F32] transition-colors duration-400 inline-block"
+                className="border border-yatiya-gold text-yatiya-gold px-10 py-4 text-[11px] font-sans tracking-[0.2em] font-bold uppercase hover:bg-yatiya-gold hover:text-yatiya-gold transition-colors duration-400 inline-block"
               >
                 DISCOVER BRIDAL
               </Link>
@@ -220,8 +162,8 @@ export default function Home() {
         <section className="py-24 md:py-32 max-w-[1400px] mx-auto px-6">
           <Reveal direction="up">
             <div className="text-center mb-24">
-              <h2 className="text-4xl md:text-5xl font-display text-[#604F6F] mb-4">DRESS THE MOMENT</h2>
-              <p className="text-[12px] font-sans uppercase tracking-[0.2em] text-[#242124]/60">Shop by Occasion</p>
+              <h2 className="text-4xl md:text-5xl font-display text-[#F5F0E6] mb-4">DRESS THE MOMENT</h2>
+              <p className="text-[12px] font-sans uppercase tracking-[0.2em] text-yatiya-muted">Shop by Occasion</p>
             </div>
           </Reveal>
 
@@ -229,48 +171,48 @@ export default function Home() {
             
             <div className="md:col-span-7 flex flex-col">
               <Reveal direction="up" delay={0.1}>
-                <Link href="/occasions/weddings" className="group block relative w-full aspect-[4/3] bg-[#F7F0E8] overflow-hidden mb-6">
+                <Link href="/occasions/weddings" className="group block relative w-full aspect-[4/3] bg-[#101010] overflow-hidden mb-6">
                   <SmartImage src="https://images.unsplash.com/photo-1610189044238-7bb79e0004cc?auto=format&fit=crop&w=1000&q=80" alt="Weddings" fill className="object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out" />
                 </Link>
                 <div className="inline-block group cursor-pointer">
-                  <h3 className="text-[14px] font-sans font-bold tracking-[0.15em] uppercase text-[#242124]">Weddings</h3>
-                  <div className="h-[1px] w-0 bg-[#C7A66A] group-hover:w-full transition-all duration-400 mt-1" />
+                  <h3 className="text-[14px] font-sans font-bold tracking-[0.15em] uppercase text-[#F5F0E6]">Weddings</h3>
+                  <div className="h-[1px] w-0 bg-yatiya-gold group-hover:w-full transition-all duration-400 mt-1" />
                 </div>
               </Reveal>
             </div>
 
             <div className="md:col-span-5 flex flex-col md:pt-24">
               <Reveal direction="up" delay={0.25}>
-                <Link href="/occasions/evening" className="group block relative w-full aspect-[3/4] bg-[#F7F0E8] overflow-hidden mb-6">
+                <Link href="/occasions/evening" className="group block relative w-full aspect-[3/4] bg-[#101010] overflow-hidden mb-6">
                   <SmartImage src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=800&q=80" alt="Evening" fill className="object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out" />
                 </Link>
                 <div className="inline-block group cursor-pointer">
-                  <h3 className="text-[14px] font-sans font-bold tracking-[0.15em] uppercase text-[#242124]">Evening</h3>
-                  <div className="h-[1px] w-0 bg-[#C7A66A] group-hover:w-full transition-all duration-400 mt-1" />
+                  <h3 className="text-[14px] font-sans font-bold tracking-[0.15em] uppercase text-[#F5F0E6]">Evening</h3>
+                  <div className="h-[1px] w-0 bg-yatiya-gold group-hover:w-full transition-all duration-400 mt-1" />
                 </div>
               </Reveal>
             </div>
 
             <div className="md:col-span-4 flex flex-col">
               <Reveal direction="up" delay={0.1}>
-                <Link href="/occasions/celebrations" className="group block relative w-full aspect-[1/1] bg-[#F7F0E8] overflow-hidden mb-6">
+                <Link href="/occasions/celebrations" className="group block relative w-full aspect-[1/1] bg-[#101010] overflow-hidden mb-6">
                   <SmartImage src="https://images.unsplash.com/photo-1515347619362-e67ebf8d4e7b?auto=format&fit=crop&w=800&q=80" alt="Celebrations" fill className="object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out" />
                 </Link>
                 <div className="inline-block group cursor-pointer">
-                  <h3 className="text-[14px] font-sans font-bold tracking-[0.15em] uppercase text-[#242124]">Celebrations</h3>
-                  <div className="h-[1px] w-0 bg-[#C7A66A] group-hover:w-full transition-all duration-400 mt-1" />
+                  <h3 className="text-[14px] font-sans font-bold tracking-[0.15em] uppercase text-[#F5F0E6]">Celebrations</h3>
+                  <div className="h-[1px] w-0 bg-yatiya-gold group-hover:w-full transition-all duration-400 mt-1" />
                 </div>
               </Reveal>
             </div>
             
             <div className="md:col-span-8 flex flex-col md:pt-16">
               <Reveal direction="up" delay={0.3}>
-                <Link href="/occasions/festivals" className="group block relative w-full aspect-[16/9] bg-[#F7F0E8] overflow-hidden mb-6">
+                <Link href="/occasions/festivals" className="group block relative w-full aspect-[16/9] bg-[#101010] overflow-hidden mb-6">
                   <SmartImage src="https://images.unsplash.com/photo-1594938298596-189f31b53e77?auto=format&fit=crop&w=1200&q=80" alt="Festivals" fill className="object-cover group-hover:scale-[1.04] transition-transform duration-700 ease-out" />
                 </Link>
                 <div className="inline-block group cursor-pointer">
-                  <h3 className="text-[14px] font-sans font-bold tracking-[0.15em] uppercase text-[#242124]">Festivals</h3>
-                  <div className="h-[1px] w-0 bg-[#C7A66A] group-hover:w-full transition-all duration-400 mt-1" />
+                  <h3 className="text-[14px] font-sans font-bold tracking-[0.15em] uppercase text-[#F5F0E6]">Festivals</h3>
+                  <div className="h-[1px] w-0 bg-yatiya-gold group-hover:w-full transition-all duration-400 mt-1" />
                 </div>
               </Reveal>
             </div>
@@ -279,19 +221,19 @@ export default function Home() {
         </section>
 
         {/* 8. CRAFT & STORY */}
-        <section ref={craftRef} className="py-24 bg-[#FCFAF7] border-t border-[#E9E3DD] overflow-hidden">
+        <section ref={craftRef} className="py-24 bg-[#080808] border-t border-yatiya-border border-[rgba(198,161,91,0.25)] overflow-hidden">
           <div className="max-w-[1200px] mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
             <div className="w-full md:w-1/2 order-2 md:order-1 flex flex-col items-center md:items-start text-center md:text-left">
               <Reveal direction="right" duration={1.2}>
-                <h2 className="text-4xl md:text-5xl font-display text-[#641F32] mb-8 leading-[1.1]">
+                <h2 className="text-4xl md:text-5xl font-display text-yatiya-gold mb-8 leading-[1.1]">
                   CRAFTED WITH INTENTION
                 </h2>
-                <p className="text-[15px] font-sans text-[#242124]/80 leading-relaxed mb-10 max-w-md">
+                <p className="text-[15px] font-sans text-[#CFC6B5] leading-relaxed mb-10 max-w-md">
                   From intricate detailing to considered silhouettes, every YATYIA piece is created to make an impression. We honor traditional Indian handwork, interpreted through a modern editorial lens.
                 </p>
                 <Link 
                   href="/about"
-                  className="border-b border-[#242124] text-[#242124] pb-1 text-[11px] font-sans tracking-[0.2em] font-bold uppercase hover:text-[#641F32] hover:border-[#641F32] transition-colors"
+                  className="border-b border-yatiya-gold text-yatiya-gold hover:bg-yatiya-gold hover:text-[#F5F0E6] pb-1 text-[11px] font-sans tracking-[0.2em] font-bold uppercase hover:text-yatiya-gold hover:border-yatiya-gold transition-colors"
                 >
                   DISCOVER OUR STORY
                 </Link>
@@ -299,7 +241,7 @@ export default function Home() {
             </div>
             <div className="w-full md:w-1/2 order-1 md:order-2 flex justify-end">
               <Reveal direction="left" delay={0.2} duration={1.2} className="w-full md:w-10/12">
-                <div className="w-full aspect-[4/5] relative bg-[#F7F0E8] overflow-hidden">
+                <div className="w-full aspect-[4/5] relative bg-[#101010] overflow-hidden">
                   <motion.div style={{ y: craftImgY }} className="absolute inset-[-10%] w-[120%] h-[120%]">
                     <SmartImage 
                       src="https://images.unsplash.com/photo-1610030469983-98e550d615e1?auto=format&fit=crop&w=800&q=80" 
@@ -324,14 +266,14 @@ export default function Home() {
               className="object-cover opacity-90"
             />
           </motion.div>
-          <div className="absolute inset-0 bg-[#242124]/40 z-0" />
+          <div className="absolute inset-0 bg-yatiya-black/40 z-0" />
           
           <motion.div style={{ y: museTextY }} className="relative z-10 text-center px-6 flex flex-col items-center">
             <Reveal direction="up" delay={0.1}>
-              <h2 className="text-[12px] font-sans font-bold tracking-[0.3em] uppercase text-[#FCFAF7] mb-8">THE MODERN MUSE</h2>
+              <h2 className="text-[12px] font-sans font-bold tracking-[0.3em] uppercase text-[#F5F0E6] mb-8">THE MODERN MUSE</h2>
             </Reveal>
             <Reveal direction="up" delay={0.3}>
-              <p className="text-4xl md:text-6xl font-display text-[#FCFAF7] italic max-w-2xl mx-auto leading-tight">
+              <p className="text-4xl md:text-6xl font-display text-[#F5F0E6] italic max-w-2xl mx-auto leading-tight">
                 Quiet luxury.<br/> Effortless grace.<br/> Timeless appeal.
               </p>
             </Reveal>
@@ -341,12 +283,12 @@ export default function Home() {
         {/* 10. PRODUCT CARD REVEAL (Bestsellers) */}
         <section className="py-24 md:py-32 max-w-[1400px] mx-auto px-6">
           <Reveal direction="up">
-            <div className="flex justify-between items-end mb-16 border-b border-[#E9E3DD] pb-8">
+            <div className="flex justify-between items-end mb-16 border-b border-yatiya-border pb-8">
               <div>
-                <h2 className="text-3xl md:text-4xl font-display text-[#641F32]">THE CURATION</h2>
-                <p className="text-[12px] font-sans uppercase tracking-[0.2em] text-[#242124]/60 mt-3">Exquisite pieces for the season</p>
+                <h2 className="text-3xl md:text-4xl font-display text-yatiya-gold">THE CURATION</h2>
+                <p className="text-[12px] font-sans uppercase tracking-[0.2em] text-yatiya-muted mt-3">Exquisite pieces for the season</p>
               </div>
-              <Link href="/collections/women" className="text-[11px] font-sans font-bold uppercase tracking-[0.2em] text-[#242124] border-b border-[#242124] hover:text-[#641F32] hover:border-[#641F32] transition-colors pb-1 hidden md:block">
+              <Link href="/collections/women" className="text-[11px] font-sans font-bold uppercase tracking-[0.2em] text-[#D6BC7A] border-b border-yatiya-gold hover:text-yatiya-gold hover:border-yatiya-gold transition-colors pb-1 hidden md:block">
                 VIEW ALL
               </Link>
             </div>
@@ -362,7 +304,7 @@ export default function Home() {
                 transition={{ duration: 0.8, delay: i * 0.1, ease: "easeOut" }}
                 className="group cursor-pointer flex flex-col"
               >
-                <Link href={`/product/${product.slug}`} className="block relative w-full aspect-[3/4] bg-[#F7F0E8] overflow-hidden mb-5">
+                <Link href={`/product/${product.slug}`} className="block relative w-full aspect-[3/4] bg-[#101010] overflow-hidden mb-5">
                   <SmartImage 
                     src={product.images[0]} 
                     alt={product.title} 
@@ -383,17 +325,17 @@ export default function Home() {
                   </div>
                   {/* Quick View Slide Up */}
                   <div className="absolute bottom-0 left-0 w-full translate-y-full group-hover:translate-y-0 transition-transform duration-400 ease-out z-20">
-                    <div className="bg-[#FCFAF7]/95 backdrop-blur-sm text-[#242124] py-3 text-center text-[10px] font-bold uppercase tracking-widest hover:bg-[#242124] hover:text-[#FCFAF7] transition-colors">
+                    <div className="bg-[#080808]/95 backdrop-blur-sm text-[#F5F0E6] py-3 text-center text-[10px] font-bold uppercase tracking-widest hover:bg-[#D6BC7A] hover:text-[#080808] transition-colors">
                       Quick View
                     </div>
                   </div>
                 </Link>
                 <div className="flex flex-col items-center text-center">
-                  <span className="text-[9px] font-sans uppercase tracking-[0.2em] text-[#604F6F] font-bold mb-2">{product.categoryId}</span>
-                  <Link href={`/product/${product.slug}`} className="text-[14px] md:text-[15px] font-sans font-medium text-[#242124] hover:text-[#641F32] transition-colors mb-2">
+                  <span className="text-[9px] font-sans uppercase tracking-[0.2em] text-yatiya-gold font-bold mb-2">{product.categoryId}</span>
+                  <Link href={`/product/${product.slug}`} className="text-[14px] md:text-[15px] font-sans font-medium text-[#F5F0E6] hover:text-yatiya-gold transition-colors mb-2">
                     {product.title}
                   </Link>
-                  <span className="text-[13px] font-sans text-[#242124]/70">₹{product.price.toLocaleString('en-IN')}</span>
+                  <span className="text-[13px] font-sans text-[#F5F0E6]/70">₹{product.price.toLocaleString('en-IN')}</span>
                 </div>
               </motion.div>
             ))}
@@ -401,21 +343,21 @@ export default function Home() {
         </section>
 
         {/* 11. TESTIMONIALS (Staggered Reveal) */}
-        <section className="py-32 bg-[#F7F0E8] overflow-hidden">
+        <section className="py-32 bg-[#101010] overflow-hidden">
           <div className="max-w-4xl mx-auto px-6 text-center flex flex-col items-center">
             <Reveal direction="none" delay={0.1}>
-              <div className="text-[#C7A66A] mb-8 text-2xl tracking-widest">★★★★★</div>
+              <div className="text-yatiya-gold mb-8 text-2xl tracking-widest">★★★★★</div>
             </Reveal>
             <Reveal direction="up" delay={0.25} duration={1}>
-              <p className="text-3xl md:text-5xl font-display text-[#604F6F] leading-snug mb-10">
+              <p className="text-3xl md:text-5xl font-display text-yatiya-gold leading-snug mb-10">
                 "Every detail felt thoughtfully considered —<br className="hidden md:block"/> from the fabric to the flawless finishing."
               </p>
             </Reveal>
             <Reveal direction="up" delay={0.4}>
-              <span className="text-[11px] font-sans font-bold tracking-[0.2em] uppercase text-[#242124]/60 relative inline-block">
-                <span className="absolute left-[-40px] top-1/2 w-8 h-[1px] bg-[#242124]/20" />
+              <span className="text-[11px] font-sans font-bold tracking-[0.2em] uppercase text-yatiya-muted relative inline-block">
+                <span className="absolute left-[-40px] top-1/2 w-8 h-[1px] bg-yatiya-gold/30" />
                 YATYIA CUSTOMER
-                <span className="absolute right-[-40px] top-1/2 w-8 h-[1px] bg-[#242124]/20" />
+                <span className="absolute right-[-40px] top-1/2 w-8 h-[1px] bg-yatiya-gold/30" />
               </span>
             </Reveal>
           </div>
@@ -425,8 +367,8 @@ export default function Home() {
         <section className="py-24 max-w-[1400px] mx-auto px-6">
           <Reveal direction="up">
             <div className="flex flex-col items-center text-center mb-16">
-              <h2 className="text-[12px] font-sans font-bold tracking-[0.2em] uppercase text-[#641F32] mb-4">#YATYIAWOMAN</h2>
-              <p className="text-3xl md:text-4xl font-display text-[#242124]">Join our editorial gallery</p>
+              <h2 className="text-[12px] font-sans font-bold tracking-[0.2em] uppercase text-[#F5F0E6] mb-4">#YATYIAWOMAN</h2>
+              <p className="text-3xl md:text-4xl font-display text-[#F5F0E6]">Join our editorial gallery</p>
             </div>
           </Reveal>
 
@@ -441,9 +383,9 @@ export default function Home() {
               { img: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=800&q=80", col: "md:col-span-3", aspect: "aspect-square" }
             ].map((item, i) => (
               <Reveal direction="up" delay={0.1 * (i % 3)} key={i} className={`${item.col}`}>
-                <div className={`group relative w-full ${item.aspect} bg-[#F7F0E8] overflow-hidden cursor-pointer`}>
+                <div className={`group relative w-full ${item.aspect} bg-[#101010] overflow-hidden cursor-pointer`}>
                   <SmartImage src={item.img} alt="Instagram" fill className="object-cover transition-transform duration-[800ms] ease-out group-hover:scale-[1.08]" />
-                  <div className="absolute inset-0 bg-[#242124]/0 group-hover:bg-[#242124]/30 transition-colors duration-400 flex flex-col items-center justify-center">
+                  <div className="absolute inset-0 bg-yatiya-black/0 group-hover:bg-yatiya-black/50 transition-colors duration-400 flex flex-col items-center justify-center">
                     <svg className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-400 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
                     <span className="text-[10px] font-sans font-bold text-white tracking-[0.2em] uppercase translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-400 delay-100">View on Instagram</span>
                   </div>

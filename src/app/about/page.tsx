@@ -2,7 +2,7 @@ import { SmartImage } from "@/components/ui/SmartImage";
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-[#FCFAF7] text-[#242124]">
+    <div className="min-h-screen bg-yatiya-ivory text-yatiya-black">
       {/* HERO */}
       <div className="w-full h-[60vh] relative overflow-hidden bg-[#604F6F]">
         <SmartImage 
@@ -11,7 +11,7 @@ export default function AboutPage() {
           fill
           className="object-cover opacity-80"
         />
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-[#FCFAF7] text-center px-6">
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-yatiya-ivory text-center px-6">
           <h1 className="text-4xl md:text-6xl font-display uppercase tracking-widest mb-6">
             Our Story
           </h1>
@@ -27,7 +27,7 @@ export default function AboutPage() {
           The Quiet Luxury House
         </h2>
         
-        <div className="flex flex-col gap-8 text-[15px] font-sans text-[#242124]/80 leading-relaxed">
+        <div className="flex flex-col gap-8 text-[15px] font-sans text-yatiya-black/80 leading-relaxed">
           <p>
             Yatiya was born from a desire to bring a sense of quiet, understated luxury to Indian fashion. We believe that true elegance lies in restraint, impeccable tailoring, and the finest fabrics.
           </p>
@@ -46,14 +46,14 @@ export default function AboutPage() {
             <h2 className="text-2xl font-display uppercase tracking-widest mb-6 text-[#641F32]">
               Our Craft
             </h2>
-            <p className="text-[14px] font-sans text-[#242124]/80 leading-relaxed mb-6">
+            <p className="text-[14px] font-sans text-yatiya-black/80 leading-relaxed mb-6">
               We work directly with master artisans across India, ensuring that traditional techniques are preserved and celebrated. Our commitment to quality means that every stitch, every seam, and every detail is perfected before a garment reaches you.
             </p>
-            <p className="text-[14px] font-sans text-[#242124]/80 leading-relaxed">
+            <p className="text-[14px] font-sans text-yatiya-black/80 leading-relaxed">
               At Yatiya, luxury is not just in the final product, but in the process of its creation. We are dedicated to ethical practices, sustainable sourcing, and creating fashion that you will cherish for a lifetime.
             </p>
           </div>
-          <div className="w-full md:w-1/2 aspect-[4/5] relative bg-[#FCFAF7] overflow-hidden">
+          <div className="w-full md:w-1/2 aspect-[4/5] relative bg-yatiya-ivory overflow-hidden">
             <SmartImage 
               src="https://images.unsplash.com/photo-1610030469983-98e550d615e1?auto=format&fit=crop&w=800&q=80"
               alt="Our Craft"

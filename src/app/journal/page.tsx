@@ -30,13 +30,13 @@ export default function JournalPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FCFAF7] text-[#242124]">
+    <div className="min-h-screen bg-yatiya-ivory text-yatiya-black">
       {/* HEADER HERO */}
       <div className="w-full bg-[#E9E3DD] py-24 text-center">
         <h1 className="text-4xl md:text-5xl font-display uppercase tracking-widest text-[#641F32]">
           The Journal
         </h1>
-        <p className="text-[13px] font-sans text-[#242124]/70 mt-6 tracking-widest uppercase">
+        <p className="text-[13px] font-sans text-yatiya-black/70 mt-6 tracking-widest uppercase">
           Stories of style, craft, and culture
         </p>
       </div>
@@ -58,17 +58,17 @@ export default function JournalPage() {
                 <span className="text-[10px] font-sans uppercase tracking-[0.15em] text-[#641F32] font-bold">
                   {article.category}
                 </span>
-                <span className="text-[10px] font-sans uppercase tracking-[0.1em] text-[#242124]/50">
+                <span className="text-[10px] font-sans uppercase tracking-[0.1em] text-yatiya-black/50">
                   {article.date}
                 </span>
               </div>
               <h2 className="text-[20px] font-display mb-3 group-hover:text-[#641F32] transition-colors leading-snug">
                 <Link href={`/journal/${article.id}`}>{article.title}</Link>
               </h2>
-              <p className="text-[13px] font-sans text-[#242124]/70 leading-relaxed mb-4">
+              <p className="text-[13px] font-sans text-yatiya-black/70 leading-relaxed mb-4">
                 {article.excerpt}
               </p>
-              <Link href={`/journal/${article.id}`} className="text-[10px] font-sans uppercase tracking-[0.15em] text-[#242124] border-b border-[#242124] pb-1 hover:text-[#641F32] hover:border-[#641F32] transition-colors font-bold">
+              <Link href={`/journal/${article.id}`} className="text-[10px] font-sans uppercase tracking-[0.15em] text-yatiya-black border-b border-yatiya-black pb-1 hover:text-[#641F32] hover:border-[#641F32] transition-colors font-bold">
                 Read More
               </Link>
             </article>

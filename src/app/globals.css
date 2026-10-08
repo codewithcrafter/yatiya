@@ -15,25 +15,42 @@
   --color-charcoal: #242124;
   --color-border: #E9E3DD;
 
+  --color-yatiya-black: #080808;
+  --color-yatiya-black-soft: #1C1C1C;
+  --color-yatiya-surface: #F5F0E6;
+  --color-yatiya-gold: #C6A15B;
+  --color-yatiya-gold-light: #D4B878;
+  --color-yatiya-gold-pale: #F0E4C5;
+  --color-yatiya-ivory: #FAF8F2;
+  --color-yatiya-white: #FFFFFF;
+  --color-yatiya-muted: #77736B;
+  --color-yatiya-border: #E7DDCA;
+  --color-yatiya-text: #171717;
+
   --font-sans: var(--font-sans), sans-serif;
   --font-display: var(--font-display), serif;
 }
 
 :root {
-  --background: #F4EFE8;
-  --foreground: #171615;
+  --background: #F8F4EC;
+  --foreground: #2B211B;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #171615;
-    --foreground: #F4EFE8;
+    --background: #F8F4EC;
+    --foreground: #2B211B;
   }
 }
 
 @layer base {
   body {
     background-color: var(--background);
+    background-image: 
+      radial-gradient(circle at 20% 20%, rgba(255,255,255,0.8), transparent 45%),
+      radial-gradient(circle at 80% 70%, rgba(201,178,124,0.08), transparent 40%),
+      linear-gradient(135deg, #FFFFFF 0%, #F8F4EC 35%, #F3EBDD 65%, #E9DDC8 100%);
+    background-attachment: fixed;
     color: var(--foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
@@ -59,11 +76,11 @@
   }
   
   .btn-primary {
-    @apply bg-[#171413] text-[#F6F1EA] px-10 py-4 text-[11px] tracking-[0.15em] font-bold uppercase transition-colors duration-300 hover:bg-[#B89A67] hover:text-[#171413];
+    @apply bg-yatiya-gold text-yatiya-black border border-yatiya-gold px-10 py-4 text-[11px] tracking-[0.15em] font-bold uppercase transition-colors duration-300 hover:bg-yatiya-gold-light hover:border-yatiya-gold-light hover:text-yatiya-black;
   }
   
   .btn-secondary {
-    @apply bg-transparent border border-[#171413] text-[#171413] px-10 py-4 text-[11px] tracking-[0.15em] font-bold uppercase transition-colors duration-300 hover:bg-[#171413] hover:text-[#F6F1EA];
+    @apply bg-transparent border border-yatiya-gold text-yatiya-gold px-10 py-4 text-[11px] tracking-[0.15em] font-bold uppercase transition-colors duration-300 hover:bg-yatiya-gold hover:text-yatiya-black;
   }
 }
 

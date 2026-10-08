@@ -59,10 +59,10 @@ export function ProductCarousel({ title, products, viewAllLink }: ProductCarouse
                 {/* Collection/Status Label */}
                 <div className="absolute bottom-4 left-4 z-20 flex gap-2">
                   {product.compareAtPrice && (
-                    <span className="bg-[#B89A67] text-[#F6F1EA] px-2 py-1 text-[9px] font-bold tracking-[0.2em] uppercase">Exclusive</span>
+                    <span className="bg-[#B89A67] text-yatiya-ivory px-2 py-1 text-[9px] font-bold tracking-[0.2em] uppercase">Exclusive</span>
                   )}
                   {product.isNew && (
-                    <span className="bg-[#F6F1EA] text-[#171413] px-2 py-1 text-[9px] font-bold tracking-[0.2em] uppercase shadow-sm">The Atelier Edit</span>
+                    <span className="bg-yatiya-ivory text-[#171413] px-2 py-1 text-[9px] font-bold tracking-[0.2em] uppercase shadow-sm">The Atelier Edit</span>
                   )}
                 </div>
               </div>
