@@ -6,6 +6,8 @@ import { SmartImage } from "@/components/ui/SmartImage";
 import Link from "next/link";
 import { Heart, Eye, Star, ShoppingCart } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
+import { useCart } from "@/context/CartContext";
+import { getProductBySlug } from "@/data/mockData";
 
 type Product = {
   id: string;
@@ -76,6 +78,42 @@ type TabType = typeof tabs[number];
 
 export function NewProducts() {
   const [activeTab, setActiveTab] = useState<TabType>("Featured");
+  const { addItem, items } = useCart();
+  const [toastMsg, setToastMsg] = useState("");
+
+  const handleAddToCart = (product: Product) => {
+    const slug = product.name.toLowerCase().replace(/ /g, '-');
+    const realProduct = getProductBySlug(slug);
+    
+    if (realProduct) {
+      const size = realProduct.sizes?.[0] || '';
+      const color = realProduct.colors?.[0] || '';
+      const itemId = `${realProduct.id}-${size || 'nosize'}-${color || 'nocolor'}`;
+      
+      const existingItem = items.find(i => i.id === itemId);
+      if (existingItem && existingItem.quantity >= 5) {
+        setToastMsg('Only 5 items available');
+        setTimeout(() => setToastMsg(''), 3000);
+        return;
+      }
+
+      addItem({
+        id: itemId,
+        productId: realProduct.id,
+        title: realProduct.name,
+        price: realProduct.salePrice || realProduct.price,
+        image: realProduct.images[0],
+        quantity: 1,
+        size,
+        color,
+        slug: realProduct.slug
+      });
+      setToastMsg('Added to cart successfully');
+      setTimeout(() => setToastMsg(''), 3000);
+    } else {
+       window.location.href = `/products/${slug}`;
+    }
+  };
 
   const getProducts = () => {
     switch (activeTab) {
@@ -107,10 +145,17 @@ export function NewProducts() {
       />
       
       <div className="relative z-10">
+      {/* Toast Notification */}
+      {toastMsg && (
+        <div className="fixed bottom-6 right-6 z-50 bg-yatiya-roman-gold text-yatiya-light-text px-6 py-3 shadow-xl flex items-center">
+          <span className="text-[12px] font-medium tracking-widest uppercase">{toastMsg}</span>
+        </div>
+      )}
+
       {/* HEADER & TABS */}
       <Reveal direction="up" delay={0.1}>
         <div className="flex flex-col items-center">
-          <h2 className="text-3xl md:text-[34px] font-display text-[#F9F6F0]">New Products</h2>
+          <h2 className="text-3xl md:text-[34px] font-display text-yatiya-dark-cocoa">New Products</h2>
           
           <div className="flex items-center gap-6 md:gap-10 mt-[15px] md:mt-[20px]">
             {tabs.map((tab) => (
@@ -154,14 +199,14 @@ export function NewProducts() {
                 className="group flex flex-col w-full"
               >
                 {/* Image Container */}
-                <div className="relative w-full aspect-[282/310] overflow-hidden bg-[#F7EEDB] border border-[#B8944A]/30 mb-[18px]">
+                <div className="relative w-full aspect-[282/310] overflow-hidden bg-yatiya-ivory border border-yatiya-antique-gold/30 mb-[18px]">
                   {product.isSale && (
-                    <div className="absolute top-3 left-3 z-10 bg-[#B8944A] text-[#F3E5C5] text-[10px] font-bold uppercase tracking-wider px-2.5 py-1">
+                    <div className="absolute top-3 left-3 z-10 bg-yatiya-antique-gold text-yatiya-cream text-[10px] font-bold uppercase tracking-wider px-2.5 py-1">
                       Sale
                     </div>
                   )}
                   
-                  <Link href={`/product/${product.id}`} className="block w-full h-full">
+                  <Link href={`/products/${product.name.toLowerCase().replace(/ /g, '-')}`} className="block w-full h-full">
                     <SmartImage 
                       src={product.image}
                       alt={product.name}
@@ -173,26 +218,26 @@ export function NewProducts() {
 
                 {/* Product Info */}
                 <div className="flex flex-col items-center text-center px-1">
-                  <span className="text-[#4B3C2A] text-[11px] font-medium tracking-wide mb-[8px]">
+                  <span className="text-yatiya-warm-bronze text-[11px] font-medium tracking-wide mb-[8px]">
                     {product.category}
                   </span>
                   
-                  <Link href={`/product/${product.id}`} className="text-[#F9F6F0] hover:text-[#79591F] transition-colors text-sm md:text-[15px] font-medium mb-[8px] line-clamp-2">
+                  <Link href={`/products/${product.name.toLowerCase().replace(/ /g, '-')}`} className="text-yatiya-deep-brown hover:text-yatiya-antique-gold transition-colors text-sm md:text-[15px] font-medium mb-[8px] line-clamp-2">
                     {product.name}
                   </Link>
                   
                   <div className="flex items-center justify-center gap-2.5 mb-[8px]">
-                    <span className="text-[#79591F] font-semibold text-sm md:text-[15px]">
+                    <span className="text-yatiya-warm-bronze font-semibold text-sm md:text-[15px]">
                       ₹{product.price.toLocaleString()}
                     </span>
                     {product.originalPrice && (
-                      <span className="text-[#B8944A] opacity-70 line-through text-xs md:text-[13px]">
+                      <span className="text-[#6B5740]/60 line-through text-xs md:text-[13px]">
                         ₹{product.originalPrice.toLocaleString()}
                       </span>
                     )}
                   </div>
                   
-                  <div className="flex text-[#79591F] gap-0.5">
+                  <div className="flex text-yatiya-rich-gold gap-0.5">
                     {[...Array(5)].map((_, i) => (
                       <Star key={i} className="w-3 h-3 fill-current" />
                     ))}
@@ -200,14 +245,14 @@ export function NewProducts() {
 
                   {/* Action Buttons */}
                   <div className="flex items-center justify-center gap-2 mt-[14px] w-full max-w-[240px]">
-                    <button className="flex-1 bg-transparent hover:bg-[#43352A] border border-[#B8944A] text-[#F9F6F0] hover:text-[#F3E5C5] py-2 px-3 text-[11px] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 shrink-0">
+                    <button onClick={() => handleAddToCart(product)} className="flex-1 bg-transparent hover:bg-yatiya-antique-gold border border-yatiya-antique-gold text-yatiya-deep-brown hover:text-yatiya-light-text py-2 px-3 text-[11px] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 shrink-0">
                       <ShoppingCart className="w-3.5 h-3.5" />
                       + Add to cart
                     </button>
-                    <button className="bg-transparent hover:bg-[#43352A] border border-[#B8944A] text-[#F9F6F0] hover:text-[#F3E5C5] w-[34px] h-[34px] flex items-center justify-center transition-colors shrink-0">
+                    <button className="bg-transparent hover:bg-yatiya-antique-gold border border-yatiya-antique-gold text-yatiya-deep-brown hover:text-yatiya-light-text w-[34px] h-[34px] flex items-center justify-center transition-colors shrink-0">
                       <Heart className="w-4 h-4" />
                     </button>
-                    <button className="bg-transparent hover:bg-[#43352A] border border-[#B8944A] text-[#F9F6F0] hover:text-[#F3E5C5] w-[34px] h-[34px] flex items-center justify-center transition-colors shrink-0">
+                    <button className="bg-transparent hover:bg-yatiya-antique-gold border border-yatiya-antique-gold text-yatiya-deep-brown hover:text-yatiya-light-text w-[34px] h-[34px] flex items-center justify-center transition-colors shrink-0">
                       <Eye className="w-4 h-4" />
                     </button>
                   </div>

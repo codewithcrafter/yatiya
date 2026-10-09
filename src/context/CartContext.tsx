@@ -11,6 +11,17 @@ export interface CartItem {
   quantity: number;
   size?: string;
   color?: string;
+  slug?: string;
+  customMeasurements?: {
+    bust?: string;
+    waist?: string;
+    hip?: string;
+    shoulder?: string;
+    sleeveLength?: string;
+    blouseLength?: string;
+    lehengaLength?: string;
+    specialRequirement?: string;
+  };
 }
 
 interface CartContextType {

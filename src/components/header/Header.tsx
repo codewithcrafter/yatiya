@@ -1,312 +1,396 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { SmartImage } from "@/components/ui/SmartImage";
-
 import { useCart } from "@/context/CartContext";
+import { useWishlist } from "@/context/WishlistContext";
 
-// Icons
-const SearchIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>;
-const UserIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>;
-const HeartIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>;
-const BagIcon = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>;
-const MenuIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>;
-const XIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>;
-const ChevronDown = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>;
+// ── Icons ─────────────────────────────────────────────────────────────────
+const SearchIcon  = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>;
+const UserIcon    = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>;
+const HeartIcon   = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>;
+const BagIcon     = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>;
+const MenuIcon    = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>;
+const XIcon       = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
+const ChevronDown = () => <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>;
 
-const announcementMessages = [
+// ── Announcement bar ───────────────────────────────────────────────────────
+const ANNOUNCEMENTS = [
   "FREE SHIPPING ON ORDERS ABOVE ₹2,999",
   "OVER 100K HAPPY CUSTOMERS",
   "COD AVAILABLE",
-  "5% OFF ON PREPAID ORDERS"
+  "5% OFF ON PREPAID ORDERS",
 ];
 
-const headerImages = {
-  womenEdit: "https://images.unsplash.com/photo-1610189044238-7bb79e0004cc?auto=format&fit=crop&w=600&q=80",
+// ── Dropdown imagery ───────────────────────────────────────────────────────
+const HEADER_IMAGES = {
+  womenEdit:   "https://images.unsplash.com/photo-1610189044238-7bb79e0004cc?auto=format&fit=crop&w=600&q=80",
   collections: "https://images.unsplash.com/photo-1594938298596-189f31b53e77?auto=format&fit=crop&w=600&q=80",
-  occasions: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80",
+  occasions:   "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80",
 };
 
-export function Header() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [activeMenu, setActiveMenu] = useState<string | null>(null);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
-  const [announcementIndex, setAnnouncementIndex] = useState(0);
+// ── Nav items ─────────────────────────────────────────────────────────────
+const LEFT_NAV = [
+  { name: "HOME",          type: "link",     href: "/" },
+  { name: "NEW ARRIVALS",  type: "link",     href: "/new-arrivals" },
+  { name: "COLLECTIONS",   type: "dropdown", href: "#" },
+  { name: "WOMEN'S EDIT",  type: "dropdown", href: "#" },
+];
 
+const RIGHT_NAV = [
+  { name: "SHOP BY OCCASION", type: "dropdown", href: "#" },
+  { name: "THE JOURNAL",      type: "link",     href: "/journal" },
+  { name: "ABOUT",            type: "link",     href: "/about" },
+];
+
+// ── Shared nav-link style ──────────────────────────────────────────────────
+const NAV_LINK_CLASS =
+  "relative text-[10px] xl:text-[11px] font-sans font-medium tracking-[0.14em] uppercase whitespace-nowrap text-yatiya-dark-cocoa hover:text-yatiya-antique-gold transition-colors duration-200 flex items-center gap-1 group";
+
+export function Header() {
   const { getCartCount } = useCart();
+  const { items: wishlistItems } = useWishlist();
   const cartCount = getCartCount();
 
+  const [isScrolled,        setIsScrolled]        = useState(false);
+  const [activeMenu,        setActiveMenu]         = useState<string | null>(null);
+  const [mobileOpen,        setMobileOpen]         = useState(false);
+  const [mobileExpanded,    setMobileExpanded]     = useState<string | null>(null);
+  const [announcementIdx,   setAnnouncementIdx]    = useState(0);
+
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 10);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const onScroll = () => setIsScrolled(window.scrollY > 8);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setAnnouncementIndex((prev) => (prev + 1) % announcementMessages.length);
-    }, 4000);
-    return () => clearInterval(timer);
+    const t = setInterval(() => setAnnouncementIdx(i => (i + 1) % ANNOUNCEMENTS.length), 4000);
+    return () => clearInterval(t);
   }, []);
 
   useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-  }, [mobileMenuOpen]);
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+  }, [mobileOpen]);
 
-  const NAV_LINKS = [
-    { name: "HOME", type: "link", href: "/" },
-    { name: "NEW ARRIVALS", type: "link", href: "/new-arrivals" },
-    { name: "COLLECTIONS", type: "dropdown" },
-    { name: "WOMEN'S EDIT", type: "dropdown" },
-    { name: "SHOP BY OCCASION", type: "dropdown" },
-    { name: "THE JOURNAL", type: "link", href: "/journal" },
-    { name: "ABOUT", type: "link", href: "/about" },
-  ];
+  // ── Mega-menu content ────────────────────────────────────────────────────
+  const megaContent: Record<string, React.ReactElement> = {
+    "WOMEN'S EDIT": (
+      <div className="flex w-full p-10" style={{ width: 860 }}>
+        <div className="w-1/3 pr-8 border-r border-yatiya-roman-gold/20">
+          <h4 className="text-[9px] font-sans font-semibold tracking-[0.2em] text-yatiya-roman-gold uppercase mb-5">SHOP</h4>
+          <ul className="space-y-3">
+            {["New Arrivals","Best Sellers","Wedding Wear","Festive Wear","Occasion Wear"].map(i => (
+              <li key={i}><Link href="#" className="text-[13px] font-sans text-yatiya-dark-cocoa hover:text-yatiya-antique-gold transition-colors">{i}</Link></li>
+            ))}
+          </ul>
+        </div>
+        <div className="w-1/3 px-8 border-r border-yatiya-roman-gold/20">
+          <h4 className="text-[9px] font-sans font-semibold tracking-[0.2em] text-yatiya-roman-gold uppercase mb-5">CATEGORIES</h4>
+          <ul className="space-y-3">
+            {["Lehengas","Sarees","Dresses","Kurtis","Anarkalis","Co-Ord Sets","Tops & Shirts","Drapes"].map(i => (
+              <li key={i}><Link href="#" className="text-[13px] font-sans text-yatiya-dark-cocoa hover:text-yatiya-antique-gold transition-colors">{i}</Link></li>
+            ))}
+          </ul>
+        </div>
+        <div className="w-1/3 pl-8">
+          <h4 className="text-[9px] font-sans font-semibold tracking-[0.2em] text-yatiya-roman-gold uppercase mb-5">FEATURED</h4>
+          <Link href="/collections/women" className="group/img block">
+            <div className="w-full aspect-[4/5] relative overflow-hidden bg-yatiya-cream mb-3">
+              <SmartImage src={HEADER_IMAGES.womenEdit} alt="Women's Edit" fill className="object-cover group-hover/img:scale-105 transition-transform duration-700"/>
+            </div>
+            <p className="text-[14px] font-display mb-1 group-hover/img:text-yatiya-antique-gold transition-colors">THE WOMEN'S EDIT</p>
+            <span className="text-[10px] font-sans font-semibold tracking-[0.1em] text-yatiya-roman-gold uppercase border-b border-yatiya-roman-gold pb-0.5">EXPLORE &rarr;</span>
+          </Link>
+        </div>
+      </div>
+    ),
+    "COLLECTIONS": (
+      <div className="flex w-full p-10" style={{ width: 680 }}>
+        <div className="w-1/2 pr-8 border-r border-yatiya-roman-gold/20">
+          <h4 className="text-[9px] font-sans font-semibold tracking-[0.2em] text-yatiya-roman-gold uppercase mb-5">CURATED EDITS</h4>
+          <ul className="space-y-3">
+            {["THE BRIDAL EDIT","THE FESTIVE EDIT","THE EVENING EDIT","THE EVERYDAY EDIT","NEW SEASON"].map(i => (
+              <li key={i}><Link href="#" className="text-[13px] font-sans text-yatiya-dark-cocoa hover:text-yatiya-antique-gold transition-colors">{i}</Link></li>
+            ))}
+          </ul>
+        </div>
+        <div className="w-1/2 pl-8">
+          <Link href="/collections" className="group/img block">
+            <div className="w-full h-[190px] relative overflow-hidden bg-yatiya-cream mb-3">
+              <SmartImage src={HEADER_IMAGES.collections} alt="Collections" fill className="object-cover group-hover/img:scale-105 transition-transform duration-700"/>
+            </div>
+            <p className="text-[14px] font-display mb-1 group-hover/img:text-yatiya-antique-gold transition-colors">ALL COLLECTIONS</p>
+            <span className="text-[10px] font-sans font-semibold tracking-[0.1em] text-yatiya-roman-gold uppercase border-b border-yatiya-roman-gold pb-0.5">SHOP NOW &rarr;</span>
+          </Link>
+        </div>
+      </div>
+    ),
+    "SHOP BY OCCASION": (
+      <div className="flex w-full p-10" style={{ width: 680 }}>
+        <div className="w-1/2 pr-8 border-r border-yatiya-roman-gold/20">
+          <h4 className="text-[9px] font-sans font-semibold tracking-[0.2em] text-yatiya-roman-gold uppercase mb-5">DRESS THE MOMENT</h4>
+          <ul className="space-y-3">
+            {["WEDDINGS","FESTIVALS","PARTIES","EVENING","CELEBRATIONS","EVERYDAY"].map(i => (
+              <li key={i}><Link href="#" className="text-[13px] font-sans text-yatiya-dark-cocoa hover:text-yatiya-antique-gold transition-colors">{i}</Link></li>
+            ))}
+          </ul>
+        </div>
+        <div className="w-1/2 pl-8">
+          <Link href="/collections/occasions" className="group/img block">
+            <div className="w-full h-[190px] relative overflow-hidden bg-yatiya-cream mb-3">
+              <SmartImage src={HEADER_IMAGES.occasions} alt="Occasions" fill className="object-cover group-hover/img:scale-105 transition-transform duration-700"/>
+            </div>
+            <p className="text-[14px] font-display mb-1 group-hover/img:text-yatiya-antique-gold transition-colors">THE OCCASION EDIT</p>
+            <span className="text-[10px] font-sans font-semibold tracking-[0.1em] text-yatiya-roman-gold uppercase border-b border-yatiya-roman-gold pb-0.5">SHOP NOW &rarr;</span>
+          </Link>
+        </div>
+      </div>
+    ),
+  };
+
+  // ── Render a single nav item (link or dropdown trigger) ──────────────────
+  const NavItem = ({ item }: { item: typeof LEFT_NAV[0] }) => (
+    <div
+      className="relative h-full flex items-center"
+      onMouseEnter={() => item.type === "dropdown" && setActiveMenu(item.name)}
+      onMouseLeave={() => setActiveMenu(null)}
+    >
+      <Link href={item.href || "#"} className={NAV_LINK_CLASS}>
+        {item.name}
+        {item.type === "dropdown" && <span className="opacity-50"><ChevronDown /></span>}
+        {/* underline hover indicator */}
+        <span className="absolute bottom-0 left-0 h-[1.5px] w-0 bg-yatiya-roman-gold group-hover:w-full transition-all duration-300" />
+      </Link>
+
+      {/* Mega-menu dropdown */}
+      {item.type === "dropdown" && megaContent[item.name] && (
+        <div
+          className={`absolute top-full left-1/2 -translate-x-1/2 bg-yatiya-ivory border border-yatiya-roman-gold/20 shadow-[0_20px_60px_-15px_rgba(52,39,25,0.18)] transition-all duration-250 ease-out z-[300] ${
+            activeMenu === item.name
+              ? "opacity-100 translate-y-0 pointer-events-auto"
+              : "opacity-0 translate-y-2 pointer-events-none"
+          }`}
+        >
+          {megaContent[item.name]}
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <>
-      <header className="w-full relative z-50">
-        
-        {/* ROW 1: ANNOUNCEMENT BAR */}
-        <div className="w-full h-[38px] bg-[#C6A15B] text-yatiya-black overflow-hidden flex items-center justify-center relative">
-          <div className="text-[11px] font-sans font-bold tracking-[0.2em] uppercase transition-opacity duration-500">
-            {announcementMessages[announcementIndex]}
-          </div>
+      <header className="w-full z-[100]" style={{ position: "relative" }}>
+
+        {/* ── ANNOUNCEMENT BAR ─────────────────────────────────────────── */}
+        <div className="w-full h-[34px] bg-yatiya-roman-gold flex items-center justify-center overflow-hidden">
+          <p className="text-[10px] font-sans font-semibold tracking-[0.22em] uppercase text-yatiya-dark-cocoa">
+            {ANNOUNCEMENTS[announcementIdx]}
+          </p>
         </div>
 
-        {/* ROW 2: MAIN HEADER */}
-        <div 
-          className={`w-full bg-[#FCFAF7] text-[#2B211B] transition-all duration-400 ease-out ${
-            isScrolled ? 'h-[70px] border-b border-[#DDD0BC] shadow-[0_4px_20px_-10px_rgba(43,33,27,0.1)] sticky top-0' : 'h-[80px] border-b-0'
+        {/* ── MAIN NAV BAR ─────────────────────────────────────────────── */}
+        <div
+          className={`w-full bg-yatiya-ivory border-b transition-all duration-300 ${
+            isScrolled
+              ? "border-yatiya-roman-gold/30 shadow-[0_2px_20px_-8px_rgba(52,39,25,0.14)]"
+              : "border-yatiya-roman-gold/15"
           }`}
-          style={{ position: isScrolled ? 'fixed' : 'relative' }}
+          style={isScrolled ? { position: "fixed", top: 0, zIndex: 200 } : { position: "relative", zIndex: 100 }}
         >
-          <div className="h-full flex items-center justify-between mx-auto" style={{ maxWidth: '1440px', width: 'calc(100% - 48px)' }}>
-            
-            {/* LEFT: LOGO */}
-            <div className="flex items-center shrink-0 lg:w-[150px]">
-              <button 
-                className="lg:hidden mr-4 hover:text-[#D6BC7A] transition-colors" 
-                aria-label="Menu"
-                onClick={() => setMobileMenuOpen(true)}
+          {/*
+           * ╔══════════════════════════════════════════════════════════╗
+           * ║  CSS GRID  —  grid-template-columns: 1fr auto 1fr       ║
+           * ║  LEFT col  = left nav  (justify-self: start)            ║
+           * ║  CENTER col = logo     (justify-self: center, auto)     ║
+           * ║  RIGHT col = right nav + icons  (justify-self: end)     ║
+           * ╚══════════════════════════════════════════════════════════╝
+           */}
+          <div
+            className="mx-auto px-6 xl:px-10"
+            style={{
+              maxWidth: "1440px",
+              display: "grid",
+              gridTemplateColumns: "1fr auto 1fr",
+              alignItems: "center",
+              height: isScrolled ? "66px" : "76px",
+              transition: "height 0.3s",
+            }}
+          >
+
+            {/* ── COL 1 · LEFT ─────────────────────────────────────────── */}
+            <div style={{ justifySelf: "start", display: "flex", alignItems: "center", height: "100%" }}>
+
+              {/* Mobile hamburger */}
+              <button
+                className="lg:hidden mr-3 text-yatiya-dark-cocoa hover:text-yatiya-antique-gold transition-colors"
+                aria-label="Open menu"
+                onClick={() => setMobileOpen(true)}
               >
                 <MenuIcon />
               </button>
-              <Link href="/" className="flex items-center hover:opacity-80 transition-opacity">
-                <SmartImage src="/logo.png" alt="YATIYA COUTURE" fill={false} width={160} height={50} className="object-contain h-[36px] md:h-[46px] w-auto" priority />
+
+              {/* Desktop left nav */}
+              <nav
+                className="hidden lg:flex items-center gap-[20px] xl:gap-[26px]"
+                style={{ height: "100%" }}
+              >
+                {LEFT_NAV.map(item => <NavItem key={item.name} item={item} />)}
+              </nav>
+            </div>
+
+            {/* ── COL 2 · CENTER LOGO (always at 50% width) ────────────── */}
+            <div style={{ justifySelf: "center", display: "flex", alignItems: "center" }}>
+              <Link
+                href="/"
+                className="flex items-center transition-opacity duration-300 hover:opacity-75"
+                aria-label="YATIYA COUTURE — Home"
+              >
+                <SmartImage
+                  src="/logo.png"
+                  alt="YATIYA COUTURE"
+                  fill={false}
+                  width={200}
+                  height={60}
+                  priority
+                  className="object-contain"
+                  style={{
+                    height: isScrolled ? "38px" : "48px",
+                    width: "auto",
+                    transition: "height 0.3s",
+                  }}
+                />
               </Link>
             </div>
 
-            {/* CENTER: DESKTOP NAVIGATION */}
-            <nav className="hidden lg:flex items-center justify-center flex-1 h-full">
-              <div className="flex items-center gap-[24px] xl:gap-[32px] h-full">
-                {NAV_LINKS.map((link) => (
-                  <div 
-                    key={link.name} 
-                    className="h-full flex items-center relative group"
-                    onMouseEnter={() => link.type === "dropdown" && setActiveMenu(link.name)}
-                    onMouseLeave={() => setActiveMenu(null)}
-                  >
-                    <Link 
-                      href={link.href || "#"} 
-                      className="text-[11px] xl:text-[12px] font-sans font-medium tracking-[0.15em] whitespace-nowrap hover:text-[#C9B27C] transition-colors flex items-center gap-1 uppercase text-[#2B211B]"
-                    >
-                      {link.name}
-                      <span className="absolute bottom-[24px] left-0 w-0 h-[1.5px] bg-[#C9B27C] transition-all duration-300 group-hover:w-full"></span>
-                    </Link>
-                    
-                    {/* MEGA MENU DROPDOWNS */}
-                    {link.type === "dropdown" && (
-                      <div 
-                        className={`absolute top-full left-1/2 -translate-x-1/2 bg-[#FCFAF7] text-[#2B211B] border border-[#DDD0BC] shadow-2xl transition-all duration-300 ease-out z-[100] flex ${
-                          activeMenu === link.name ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-2 pointer-events-none'
-                        }`}
-                        style={{ width: link.name === "WOMEN'S EDIT" ? '900px' : '700px' }}
-                      >
-                        
-                        {/* WOMEN'S EDIT MENU */}
-                        {link.name === "WOMEN'S EDIT" && (
-                          <div className="w-full flex p-10">
-                            <div className="w-1/3 flex flex-col pr-8 border-r border-yatiya-gold/20">
-                              <h4 className="text-[11px] font-sans font-bold tracking-[0.15em] text-yatiya-gold uppercase mb-5">SHOP</h4>
-                              <ul className="space-y-4">
-                                {["New Arrivals", "Best Sellers", "Wedding Wear", "Festive Wear", "Occasion Wear"].map((item) => (
-                                  <li key={item}><Link href="#" className="text-[14px] font-sans hover:text-[#D6BC7A] transition-colors">{item}</Link></li>
-                                ))}
-                              </ul>
-                            </div>
-                            <div className="w-1/3 flex flex-col px-8 border-r border-yatiya-gold/20">
-                              <h4 className="text-[11px] font-sans font-bold tracking-[0.15em] text-yatiya-gold uppercase mb-5">CATEGORIES</h4>
-                              <ul className="space-y-4">
-                                {["Lehengas", "Sarees", "Dresses", "Kurtis", "Anarkalis", "Co-Ord Sets", "Tops & Shirts", "Drapes"].map((item) => (
-                                  <li key={item}><Link href="#" className="text-[14px] font-sans hover:text-[#D6BC7A] transition-colors">{item}</Link></li>
-                                ))}
-                              </ul>
-                            </div>
-                            <div className="w-1/3 flex flex-col pl-8">
-                              <h4 className="text-[11px] font-sans font-bold tracking-[0.15em] text-yatiya-gold uppercase mb-5">FEATURED</h4>
-                              <Link href="/collections/women" className="group block">
-                                <div className="w-full aspect-[4/5] relative overflow-hidden bg-[#101010] mb-4">
-                                  <SmartImage src={headerImages.womenEdit} alt="Women's Edit" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                                </div>
-                                <h5 className="text-[14px] font-display mb-1 group-hover:text-[#D6BC7A] transition-colors">THE WOMEN'S EDIT</h5>
-                                <p className="text-[12px] font-sans text-yatiya-black/70 mb-2">Contemporary silhouettes, timeless craftsmanship and occasion-ready pieces for the modern woman.</p>
-                                <span className="text-[11px] font-sans font-bold tracking-[0.1em] text-yatiya-gold uppercase border-b border-yatiya-gold pb-0.5">EXPLORE THE COLLECTION &rarr;</span>
-                              </Link>
-                            </div>
-                          </div>
-                        )}
+            {/* ── COL 3 · RIGHT ────────────────────────────────────────── */}
+            <div
+              style={{ justifySelf: "end", display: "flex", alignItems: "center", height: "100%", gap: "0" }}
+            >
+              {/* Desktop right nav */}
+              <nav
+                className="hidden lg:flex items-center gap-[20px] xl:gap-[26px] mr-[20px] xl:mr-[26px]"
+                style={{ height: "100%" }}
+              >
+                {RIGHT_NAV.map(item => <NavItem key={item.name} item={item} />)}
+              </nav>
 
-                        {/* COLLECTIONS MENU */}
-                        {link.name === "COLLECTIONS" && (
-                          <div className="w-full flex p-10">
-                            <div className="w-1/2 flex flex-col pr-8 border-r border-yatiya-gold/20">
-                              <h4 className="text-[11px] font-sans font-bold tracking-[0.15em] text-yatiya-gold uppercase mb-5">CURATED EDITS</h4>
-                              <ul className="space-y-4">
-                                {["THE BRIDAL EDIT", "THE FESTIVE EDIT", "THE EVENING EDIT", "THE EVERYDAY EDIT", "NEW SEASON"].map((item) => (
-                                  <li key={item}><Link href="#" className="text-[14px] font-sans hover:text-[#D6BC7A] transition-colors uppercase">{item}</Link></li>
-                                ))}
-                              </ul>
-                            </div>
-                            <div className="w-1/2 flex flex-col pl-8">
-                              <Link href="/collections" className="group block h-full">
-                                <div className="w-full h-[200px] relative overflow-hidden bg-[#101010] mb-4">
-                                  <SmartImage src={headerImages.collections} alt="Collections" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                                </div>
-                                <h5 className="text-[14px] font-display mb-1 group-hover:text-[#D6BC7A] transition-colors">EXPLORE ALL COLLECTIONS</h5>
-                                <span className="text-[11px] font-sans font-bold tracking-[0.1em] text-yatiya-gold uppercase border-b border-yatiya-gold pb-0.5">SHOP NOW &rarr;</span>
-                              </Link>
-                            </div>
-                          </div>
-                        )}
-
-                        {/* OCCASIONS MENU */}
-                        {link.name === "SHOP BY OCCASION" && (
-                          <div className="w-full flex p-10">
-                            <div className="w-1/2 flex flex-col pr-8 border-r border-yatiya-gold/20">
-                              <h4 className="text-[11px] font-sans font-bold tracking-[0.15em] text-yatiya-gold uppercase mb-5">DRESS THE MOMENT</h4>
-                              <ul className="space-y-4">
-                                {["WEDDINGS", "FESTIVALS", "PARTIES", "EVENING", "CELEBRATIONS", "EVERYDAY"].map((item) => (
-                                  <li key={item}><Link href="#" className="text-[14px] font-sans hover:text-[#D6BC7A] transition-colors uppercase">{item}</Link></li>
-                                ))}
-                              </ul>
-                            </div>
-                            <div className="w-1/2 flex flex-col pl-8">
-                              <Link href="/collections/occasions" className="group block h-full">
-                                <div className="w-full h-[200px] relative overflow-hidden bg-[#101010] mb-4">
-                                  <SmartImage src={headerImages.occasions} alt="Occasions" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                                </div>
-                                <h5 className="text-[14px] font-display mb-1 group-hover:text-[#D6BC7A] transition-colors">THE OCCASION EDIT</h5>
-                                <span className="text-[11px] font-sans font-bold tracking-[0.1em] text-yatiya-gold uppercase border-b border-yatiya-gold pb-0.5">SHOP NOW &rarr;</span>
-                              </Link>
-                            </div>
-                          </div>
-                        )}
-
-                      </div>
-                    )}
-                  </div>
-                ))}
+              {/* Action icons */}
+              <div className="flex items-center gap-[14px] xl:gap-[18px] text-yatiya-dark-cocoa">
+                <button className="hover:text-yatiya-antique-gold transition-colors" aria-label="Search">
+                  <SearchIcon />
+                </button>
+                <Link href="/account" className="hover:text-yatiya-antique-gold transition-colors hidden sm:flex" aria-label="Account">
+                  <UserIcon />
+                </Link>
+                <Link href="/wishlist" className="hover:text-yatiya-antique-gold transition-colors relative hidden sm:flex" aria-label="Wishlist">
+                  <HeartIcon />
+                  {wishlistItems.length > 0 && (
+                    <span className="absolute -top-1.5 -right-2 w-[14px] h-[14px] bg-yatiya-burgundy text-yatiya-light-text text-[8px] font-bold flex items-center justify-center rounded-full">
+                      {wishlistItems.length}
+                    </span>
+                  )}
+                </Link>
+                <Link href="/cart" className="hover:text-yatiya-antique-gold transition-colors relative flex" aria-label="Cart">
+                  <BagIcon />
+                  {cartCount > 0 && (
+                    <span className="absolute -top-1.5 -right-2 w-[14px] h-[14px] bg-yatiya-antique-gold text-yatiya-light-text text-[8px] font-bold flex items-center justify-center rounded-full">
+                      {cartCount}
+                    </span>
+                  )}
+                </Link>
               </div>
-            </nav>
-
-            {/* RIGHT: ICONS */}
-            <div className="flex items-center justify-end shrink-0 gap-[20px] lg:w-[150px] text-[#2B211B]">
-              <button className="hover:text-[#C9B27C] transition-colors" aria-label="Search">
-                <SearchIcon />
-              </button>
-              <Link href="/account" className="hover:text-[#C9B27C] transition-colors hidden sm:block" aria-label="Account">
-                <UserIcon />
-              </Link>
-              <Link href="/wishlist" className="hover:text-[#C9B27C] transition-colors hidden sm:block" aria-label="Wishlist">
-                <HeartIcon />
-              </Link>
-              <Link href="/cart" className="hover:text-[#C9B27C] transition-colors relative" aria-label="Cart">
-                <BagIcon />
-                {cartCount > 0 && (
-                  <span className="absolute -top-1.5 -right-2 w-4 h-4 bg-[#C9B27C] text-[#FCFAF7] text-[9px] font-bold flex items-center justify-center rounded-full">
-                    {cartCount}
-                  </span>
-                )}
-              </Link>
             </div>
 
-          </div>
-        </div>
+          </div>{/* end grid */}
+        </div>{/* end nav bar */}
       </header>
 
-      {/* MOBILE FULL-SCREEN MENU */}
-      <div 
-        className={`fixed inset-0 bg-[#FCFAF7] z-[100] transition-transform duration-500 ease-in-out lg:hidden overflow-y-auto flex flex-col ${
-          mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+      {/* ── MOBILE SLIDE-IN MENU ─────────────────────────────────────────── */}
+      {/* Backdrop */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 bg-yatiya-dark-cocoa/40 z-[300] lg:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      <div
+        className={`fixed inset-y-0 left-0 w-[85vw] max-w-[360px] bg-yatiya-ivory z-[400] flex flex-col transition-transform duration-400 ease-in-out lg:hidden ${
+          mobileOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="w-full h-[80px] flex items-center justify-between px-6 border-b border-[#DDD0BC] shrink-0 bg-[#FCFAF7] text-[#2B211B]">
-          <Link href="/" onClick={() => setMobileMenuOpen(false)} className="hover:opacity-80 transition-opacity">
-            <SmartImage src="/logo.png" alt="YATIYA COUTURE" fill={false} width={120} height={40} className="object-contain h-[30px] w-auto" />
+        {/* Mobile header row */}
+        <div className="flex items-center justify-between px-5 h-[66px] border-b border-yatiya-roman-gold/20 shrink-0">
+          <Link href="/" onClick={() => setMobileOpen(false)}>
+            <SmartImage src="/logo.png" alt="YATIYA COUTURE" fill={false} width={130} height={40} className="object-contain h-[30px] w-auto" />
           </Link>
-          <button onClick={() => setMobileMenuOpen(false)} aria-label="Close Menu" className="hover:text-[#C9B27C] transition-colors">
+          <button onClick={() => setMobileOpen(false)} aria-label="Close" className="text-yatiya-dark-cocoa hover:text-yatiya-antique-gold transition-colors">
             <XIcon />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-6 py-8">
-          <ul className="flex flex-col gap-6">
+        {/* Mobile nav */}
+        <div className="flex-1 overflow-y-auto py-4">
+          <ul className="divide-y divide-yatiya-roman-gold/12">
+            {[
+              { label: "Home",             href: "/" },
+              { label: "New Arrivals",     href: "/new-arrivals" },
+              { label: "Collections",      href: "/collections" },
+              { label: "Shop by Occasion", href: "/collections/occasions" },
+              { label: "The Journal",      href: "/journal" },
+              { label: "About",            href: "/about" },
+            ].map(link => (
+              <li key={link.label}>
+                <Link
+                  href={link.href}
+                  className="flex items-center px-6 py-4 text-[15px] font-sans font-medium uppercase tracking-[0.08em] text-yatiya-dark-cocoa hover:text-yatiya-antique-gold hover:bg-yatiya-cream transition-colors"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+
+            {/* Women's Edit accordion */}
             <li>
-              <Link href="/" className="text-[18px] font-sans uppercase text-[#2B211B]" onClick={() => setMobileMenuOpen(false)}>HOME</Link>
-            </li>
-            <li>
-              <Link href="/new-arrivals" className="text-[18px] font-sans uppercase text-[#2B211B]" onClick={() => setMobileMenuOpen(false)}>NEW ARRIVALS</Link>
-            </li>
-            
-            {/* WOMEN'S EDIT ACCORDION */}
-            <li className="flex flex-col border-b border-[#DDD0BC] pb-4">
-              <button 
-                className="flex items-center justify-between w-full text-[18px] font-sans uppercase text-[#2B211B]"
-                onClick={() => setMobileExpanded(mobileExpanded === 'WOMENS_EDIT' ? null : 'WOMENS_EDIT')}
+              <button
+                className="flex items-center justify-between w-full px-6 py-4 text-[15px] font-sans font-medium uppercase tracking-[0.08em] text-yatiya-dark-cocoa hover:text-yatiya-antique-gold hover:bg-yatiya-cream transition-colors"
+                onClick={() => setMobileExpanded(mobileExpanded === "W" ? null : "W")}
               >
-                WOMEN'S EDIT
-                <span className={`transition-transform duration-300 ${mobileExpanded === 'WOMENS_EDIT' ? 'rotate-180' : ''}`}><ChevronDown /></span>
+                Women&apos;s Edit
+                <span className={`transition-transform duration-300 ${mobileExpanded === "W" ? "rotate-180" : ""}`}>
+                  <ChevronDown />
+                </span>
               </button>
-              <div className={`overflow-hidden transition-all duration-300 ${mobileExpanded === 'WOMENS_EDIT' ? 'max-h-[500px] mt-6 opacity-100' : 'max-h-0 opacity-0'}`}>
-                <div className="flex flex-col gap-4 pl-4 border-l border-yatiya-gold/30">
-                  {["Lehengas", "Sarees", "Dresses", "Anarkalis", "Kurtis", "Co-Ord Sets", "Tops & Shirts", "Drapes"].map((item) => (
-                    <Link key={item} href="#" className="text-[15px] font-sans text-yatiya-ivory/80" onClick={() => setMobileMenuOpen(false)}>{item}</Link>
+              <div className={`overflow-hidden transition-all duration-300 ${mobileExpanded === "W" ? "max-h-[400px]" : "max-h-0"}`}>
+                <div className="flex flex-col gap-0 pl-10 pr-6 pb-4 border-l-2 border-yatiya-roman-gold/30 ml-6">
+                  {["Lehengas","Sarees","Dresses","Anarkalis","Kurtis","Co-Ord Sets","Tops & Shirts","Drapes"].map(item => (
+                    <Link key={item} href="#" className="py-2 text-[13px] font-sans text-yatiya-dark-cocoa/75 hover:text-yatiya-antique-gold transition-colors" onClick={() => setMobileOpen(false)}>
+                      {item}
+                    </Link>
                   ))}
-                  <Link href="/collections/women" className="text-[14px] font-sans font-bold text-yatiya-gold mt-2" onClick={() => setMobileMenuOpen(false)}>EXPLORE THE COLLECTION &rarr;</Link>
                 </div>
               </div>
             </li>
-
-            <li>
-              <Link href="/collections" className="text-[18px] font-sans uppercase text-[#2B211B]" onClick={() => setMobileMenuOpen(false)}>COLLECTIONS</Link>
-            </li>
-            <li>
-              <Link href="/collections/occasions" className="text-[18px] font-sans uppercase text-[#2B211B]" onClick={() => setMobileMenuOpen(false)}>SHOP BY OCCASION</Link>
-            </li>
-            <li>
-              <Link href="/journal" className="text-[18px] font-sans uppercase text-[#2B211B]" onClick={() => setMobileMenuOpen(false)}>THE JOURNAL</Link>
-            </li>
-            <li>
-              <Link href="/about" className="text-[18px] font-sans uppercase text-[#2B211B]" onClick={() => setMobileMenuOpen(false)}>ABOUT</Link>
-            </li>
           </ul>
         </div>
-        
-        <div className="w-full bg-[#E9DDC8] p-8 flex justify-center gap-8 text-[#2B211B]">
-          <Link href="/account" className="flex flex-col items-center gap-2 hover:text-[#C9B27C]" onClick={() => setMobileMenuOpen(false)}>
-            <UserIcon />
-            <span className="text-[10px] uppercase font-bold tracking-widest">Account</span>
+
+        {/* Mobile bottom actions */}
+        <div className="shrink-0 border-t border-yatiya-roman-gold/20 bg-yatiya-cream px-6 py-4 flex items-center justify-around text-yatiya-dark-cocoa">
+          <Link href="/account" className="flex flex-col items-center gap-1 hover:text-yatiya-antique-gold transition-colors" onClick={() => setMobileOpen(false)}>
+            <UserIcon /><span className="text-[8px] font-sans font-semibold uppercase tracking-wider">Account</span>
           </Link>
-          <Link href="/wishlist" className="flex flex-col items-center gap-2 hover:text-[#C9B27C]" onClick={() => setMobileMenuOpen(false)}>
-            <HeartIcon />
-            <span className="text-[10px] uppercase font-bold tracking-widest">Wishlist</span>
+          <Link href="/wishlist" className="flex flex-col items-center gap-1 hover:text-yatiya-antique-gold transition-colors" onClick={() => setMobileOpen(false)}>
+            <HeartIcon /><span className="text-[8px] font-sans font-semibold uppercase tracking-wider">Wishlist</span>
+          </Link>
+          <Link href="/cart" className="flex flex-col items-center gap-1 hover:text-yatiya-antique-gold transition-colors relative" onClick={() => setMobileOpen(false)}>
+            <BagIcon />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 right-2 w-[14px] h-[14px] bg-yatiya-antique-gold text-yatiya-light-text text-[8px] font-bold flex items-center justify-center rounded-full">{cartCount}</span>
+            )}
+            <span className="text-[8px] font-sans font-semibold uppercase tracking-wider">Cart</span>
           </Link>
         </div>
       </div>

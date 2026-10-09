@@ -1,21 +1,25 @@
 import type { Metadata } from "next";
-import { Bodoni_Moda, Manrope } from "next/font/google";
+import { Cormorant_Garamond, Montserrat } from "next/font/google";
 import { Header } from "@/components/header/Header";
 import { Footer } from "@/components/footer/Footer";
 import { CartProvider } from "@/context/CartContext";
+import { WishlistProvider } from "@/context/WishlistContext";
+import { CustomerProvider } from "@/context/CustomerContext";
 import "./globals.css";
 
-const bodoni = Bodoni_Moda({
+const cormorant = Cormorant_Garamond({
   variable: "--font-display",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["300", "400", "500", "600", "700"],
   style: ["normal", "italic"],
+  display: "swap",
 });
 
-const manrope = Manrope({
+const montserrat = Montserrat({
   variable: "--font-sans",
   subsets: ["latin"],
-  weight: ["200", "300", "400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -29,14 +33,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${bodoni.variable} ${manrope.variable}`}>
+    <html lang="en" className={`${cormorant.variable} ${montserrat.variable}`}>
       <body className="min-h-screen flex flex-col antialiased">
         <CartProvider>
-          <Header />
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
+          <CustomerProvider>
+            <WishlistProvider>
+              <Header />
+              <main className="flex-1">
+                {children}
+              </main>
+              <Footer />
+            </WishlistProvider>
+          </CustomerProvider>
         </CartProvider>
       </body>
     </html>

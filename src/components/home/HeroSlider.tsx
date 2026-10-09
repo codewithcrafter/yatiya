@@ -88,7 +88,7 @@ export function HeroSlider() {
             priority={true}
           />
           {/* Overlay to ensure text readability */}
-          <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-l from-[#2B211B]/60 via-[#2B211B]/10 to-transparent md:to-transparent z-0" />
+          <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-l from-yatiya-dark-cocoa/65 via-yatiya-dark-cocoa/20 to-transparent z-0 pointer-events-none" />
         </motion.div>
       </AnimatePresence>
 
@@ -104,13 +104,13 @@ export function HeroSlider() {
               transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
               className="w-full"
             >
-              <span className="text-[11px] font-sans font-bold tracking-[0.25em] text-[#2B211B] uppercase mb-4 block">
+              <span className="text-[11px] font-sans font-bold tracking-[0.25em] text-yatiya-light-text uppercase mb-4 block">
                 {activeSlide.label}
               </span>
-              <h2 className="text-4xl md:text-5xl lg:text-[64px] font-display text-[#2B211B] mb-6 leading-[1.05] whitespace-pre-line">
+              <h2 className="text-4xl md:text-5xl lg:text-[64px] font-display text-yatiya-light-text mb-6 leading-[1.05] whitespace-pre-line">
                 {activeSlide.heading}
               </h2>
-              <p className="text-[14px] md:text-[15px] font-sans text-[#2B211B]/90 leading-relaxed mb-10 max-w-md">
+              <p className="text-[14px] md:text-[15px] font-sans text-yatiya-light-text leading-relaxed mb-10 max-w-md">
                 {activeSlide.text}
               </p>
             </motion.div>
@@ -126,7 +126,7 @@ export function HeroSlider() {
             >
               <Link 
                 href={activeSlide.link}
-                className="inline-flex items-center gap-4 bg-[#F8F4EC] text-[#2B211B] px-10 py-4 text-[11px] font-sans tracking-[0.2em] font-bold uppercase hover: hover:text-[#2B211B] border border-transparent hover:border-yatiya-ivory transition-all duration-400"
+                className="inline-flex items-center gap-4 bg-yatiya-roman-gold text-yatiya-light-text px-10 py-4 text-[11px] font-sans tracking-[0.2em] font-bold uppercase hover:bg-yatiya-antique-gold transition-all duration-400"
               >
                 {activeSlide.cta}
               </Link>
@@ -138,14 +138,14 @@ export function HeroSlider() {
       {/* Navigation Arrows */}
       <button 
         onClick={prevSlide} 
-        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full border border-yatiya-ivory/40 flex items-center justify-center text-[#2B211B] hover:bg-[#F8F4EC] hover:text-[#2B211B] transition-all duration-300 opacity-0 group-hover:opacity-100"
+        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full border border-yatiya-light-text/40 flex items-center justify-center text-yatiya-light-text hover:bg-yatiya-light-text/10 transition-all duration-300 opacity-0 group-hover:opacity-100"
         aria-label="Previous slide"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
       <button 
         onClick={nextSlide} 
-        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full border border-yatiya-ivory/40 flex items-center justify-center text-[#2B211B] hover:bg-[#F8F4EC] hover:text-[#2B211B] transition-all duration-300 opacity-0 group-hover:opacity-100"
+        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full border border-yatiya-light-text/40 flex items-center justify-center text-yatiya-light-text hover:bg-yatiya-light-text/10 transition-all duration-300 opacity-0 group-hover:opacity-100"
         aria-label="Next slide"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 18l6-6-6-6"/></svg>
@@ -159,8 +159,8 @@ export function HeroSlider() {
             onClick={() => setCurrent(idx)}
             className={`transition-all duration-500 ease-out rounded-full ${
               current === idx 
-                ? "w-8 h-[2px] bg-[#F8F4EC]" 
-                : "w-2 h-[2px] bg-[#F8F4EC]/40 hover:bg-[#F8F4EC]/80"
+                ? "w-8 h-[2px] bg-yatiya-ivory" 
+                : "w-2 h-[2px] bg-yatiya-ivory/40 hover:bg-yatiya-ivory/80"
             }`}
             aria-label={`Go to slide ${idx + 1}`}
           />

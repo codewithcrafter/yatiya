@@ -110,31 +110,31 @@ export function BlogSection() {
   }, [isHovered, nextSlide]);
 
   return (
-    <section className="pt-[70px] md:pt-[80px] pb-[70px] md:pb-[80px] w-full max-w-[1920px] mx-auto overflow-hidden bg-[#F8F4EC]">
+    <section className="pt-[70px] md:pt-[80px] pb-[70px] md:pb-[80px] w-full max-w-[1920px] mx-auto overflow-hidden bg-yatiya-ivory">
       
       {/* PART 1: WIDE PROMOTIONAL BANNER */}
       <Reveal direction="up" delay={0.1}>
         <div className="px-6 md:px-[30px] w-full">
-          <Link href="/collection/new-season" className="group relative w-full aspect-[4/3] sm:aspect-[16/7] md:aspect-[1531/400] overflow-hidden bg-[#2B211B]-soft flex items-center rounded-sm">
+          <Link href="/collection/new-season" className="group relative w-full aspect-[4/3] sm:aspect-[16/7] md:aspect-[1531/400] overflow-hidden bg-yatiya-deep-brown-soft flex items-center rounded-sm">
             <SmartImage 
               src={wideBannerImage}
               alt="Elevate Your Couture Style"
               fill
               className="object-cover opacity-80 transition-transform duration-500 ease-out group-hover:scale-[1.03] object-[center_20%]"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#2B211B]/80 via-[#2B211B]/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-yatiya-dark-cocoa/80 via-yatiya-dark-cocoa/40 to-transparent" />
             
-            <div className="relative z-10 flex flex-col justify-center h-full px-6 md:px-16 max-w-[90%] md:max-w-[50%] text-[#3B2A16]">
-              <span className="text-yatiya-gold text-[10px] md:text-xs font-bold uppercase tracking-widest mb-2 md:mb-4">
+            <div className="relative z-10 flex flex-col justify-center h-full px-6 md:px-16 max-w-[90%] md:max-w-[50%] text-yatiya-light-text">
+              <span className="text-yatiya-light-gold text-[10px] md:text-xs font-bold uppercase tracking-widest mb-2 md:mb-4">
                 NEW SEASON
               </span>
               <h3 className="text-3xl md:text-4xl lg:text-[42px] font-display leading-tight mb-3 md:mb-4">
                 ELEVATE YOUR COUTURE STYLE
               </h3>
-              <p className="text-gray-200 text-sm md:text-[15px] mb-6 md:mb-8 max-w-[400px] leading-relaxed">
+              <p className="text-yatiya-light-text text-sm md:text-[15px] mb-6 md:mb-8 max-w-[400px] leading-relaxed">
                 Discover exquisite silhouettes crafted for unforgettable moments.
               </p>
-              <div className="inline-flex items-center text-xs font-bold uppercase tracking-widest hover:text-yatiya-gold transition-colors border-b border-transparent hover:border-yatiya-gold pb-1 w-fit">
+              <div className="inline-flex items-center text-xs font-bold uppercase tracking-widest hover:text-yatiya-light-gold transition-colors border-b border-transparent hover:border-yatiya-light-gold pb-1 w-fit">
                 SHOP NOW <span className="ml-2">→</span>
               </div>
             </div>
@@ -146,8 +146,8 @@ export function BlogSection() {
       <div className="mt-[60px] md:mt-[70px] px-6 md:px-[30px] w-full">
         <Reveal direction="up" delay={0.2}>
           <div className="flex flex-col items-center text-center">
-            <h2 className="text-3xl md:text-[34px] font-display text-[#D6BC7A]">From The Blog</h2>
-            <div className="w-[60px] h-[2px] bg-yatiya-gold mt-[15px]" />
+            <h2 className="text-3xl md:text-[34px] font-display text-yatiya-deep-brown">From The Blog</h2>
+            <div className="w-[60px] h-[2px] bg-yatiya-antique-gold mt-[15px]" />
           </div>
         </Reveal>
 
@@ -162,14 +162,14 @@ export function BlogSection() {
             <>
               <button
                 onClick={prevSlide}
-                className="absolute left-[-15px] md:left-[-20px] top-[40%] -translate-y-1/2 z-10 w-10 h-10 bg-[#F8F4EC] shadow-md rounded-full flex items-center justify-center text-[#D6BC7A] hover:bg-yatiya-gold hover:text-[#3B2A16] transition-colors"
+                className="absolute left-[-15px] md:left-[-20px] top-[40%] -translate-y-1/2 z-10 w-10 h-10 bg-yatiya-ivory shadow-md rounded-full flex items-center justify-center text-yatiya-deep-brown hover:bg-yatiya-antique-gold hover:text-yatiya-light-text transition-colors"
                 aria-label="Previous blog posts"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <button
                 onClick={nextSlide}
-                className="absolute right-[-15px] md:right-[-20px] top-[40%] -translate-y-1/2 z-10 w-10 h-10 bg-[#F8F4EC] shadow-md rounded-full flex items-center justify-center text-[#D6BC7A] hover:bg-yatiya-gold hover:text-[#3B2A16] transition-colors"
+                className="absolute right-[-15px] md:right-[-20px] top-[40%] -translate-y-1/2 z-10 w-10 h-10 bg-yatiya-ivory shadow-md rounded-full flex items-center justify-center text-yatiya-deep-brown hover:bg-yatiya-antique-gold hover:text-yatiya-light-text transition-colors"
                 aria-label="Next blog posts"
               >
                 <ChevronRight className="w-5 h-5" />
@@ -191,7 +191,7 @@ export function BlogSection() {
                   <Link href={post.link} className="group block h-full flex flex-col">
                     
                     {/* Image */}
-                    <div className="relative w-full aspect-[360/313] overflow-hidden rounded-sm bg-gray-100 mb-5 shrink-0">
+                    <div className="relative w-full aspect-[360/313] overflow-hidden rounded-sm bg-yatiya-cream mb-5 shrink-0">
                       <SmartImage
                         src={post.image}
                         alt={post.title}
@@ -202,13 +202,13 @@ export function BlogSection() {
                     
                     {/* Content */}
                     <div className="flex flex-col grow">
-                      <span className="text-[#F5F0E6] text-[11px] md:text-xs font-medium uppercase tracking-widest mb-2">
+                      <span className="text-yatiya-warm-bronze text-[11px] md:text-xs font-medium uppercase tracking-widest mb-2">
                         {post.date}
                       </span>
-                      <h4 className="text-[#D6BC7A] font-display text-lg md:text-[20px] leading-[1.3] mb-4 group-hover:text-yatiya-gold transition-colors line-clamp-2">
+                      <h4 className="text-yatiya-deep-brown font-display text-lg md:text-[20px] leading-[1.3] mb-4 group-hover:text-yatiya-antique-gold transition-colors line-clamp-2">
                         {post.title}
                       </h4>
-                      <span className="mt-auto text-xs font-bold uppercase tracking-widest text-[#D6BC7A] group-hover:text-yatiya-gold transition-colors inline-flex items-center">
+                      <span className="mt-auto text-xs font-bold uppercase tracking-widest text-yatiya-deep-brown group-hover:text-yatiya-antique-gold transition-colors inline-flex items-center">
                         READ MORE <span className="ml-1 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">→</span>
                       </span>
                     </div>

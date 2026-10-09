@@ -6,6 +6,8 @@ import { SmartImage } from "@/components/ui/SmartImage";
 import Link from "next/link";
 import { Heart, Eye, Star, ShoppingCart, ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { Reveal } from "@/components/ui/Reveal";
+import { useCart } from "@/context/CartContext";
+import { getProductBySlug } from "@/data/mockData";
 
 type Product = {
   id: string;
@@ -96,6 +98,42 @@ function useCountdown(initialDays: number) {
 export function DealsAndBestSeller() {
   const timeLeft = useCountdown(2);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { addItem, items } = useCart();
+  const [toastMsg, setToastMsg] = useState("");
+
+  const handleAddToCart = (product: Product) => {
+    const slug = product.name.toLowerCase().replace(/ /g, '-');
+    const realProduct = getProductBySlug(slug);
+    
+    if (realProduct) {
+      const size = realProduct.sizes?.[0] || '';
+      const color = realProduct.colors?.[0] || '';
+      const itemId = `${realProduct.id}-${size || 'nosize'}-${color || 'nocolor'}`;
+      
+      const existingItem = items.find(i => i.id === itemId);
+      if (existingItem && existingItem.quantity >= 5) {
+        setToastMsg('Only 5 items available');
+        setTimeout(() => setToastMsg(''), 3000);
+        return;
+      }
+
+      addItem({
+        id: itemId,
+        productId: realProduct.id,
+        title: realProduct.name,
+        price: realProduct.salePrice || realProduct.price,
+        image: realProduct.images[0],
+        quantity: 1,
+        size,
+        color,
+        slug: realProduct.slug
+      });
+      setToastMsg('Added to cart successfully');
+      setTimeout(() => setToastMsg(''), 3000);
+    } else {
+       window.location.href = `/products/${slug}`;
+    }
+  };
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
@@ -108,8 +146,15 @@ export function DealsAndBestSeller() {
   const formatTime = (time: number) => time.toString().padStart(2, '0');
 
   return (
-    <section className="pt-[70px] md:pt-[80px] pb-[70px] md:pb-[80px] w-full bg-[#2B211B] overflow-hidden">
+    <section className="pt-[70px] md:pt-[80px] pb-[70px] md:pb-[80px] w-full bg-yatiya-deep-brown overflow-hidden relative">
       
+      {/* Toast Notification */}
+      {toastMsg && (
+        <div className="fixed bottom-6 right-6 z-[100] bg-yatiya-roman-gold text-yatiya-light-text px-6 py-3 shadow-xl flex items-center">
+          <span className="text-[12px] font-medium tracking-widest uppercase">{toastMsg}</span>
+        </div>
+      )}
+
       {/* PART 1: DEALS OF THE DAY BANNER */}
       <div className="w-full max-w-[1920px] mx-auto px-6 md:px-[30px]">
         <Reveal direction="up" delay={0.1}>
@@ -123,68 +168,68 @@ export function DealsAndBestSeller() {
               className="object-cover opacity-60 md:opacity-80 object-[center_30%]"
             />
             {/* Gradient Overlay for Readability */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#2B211B]/80 via-[#2B211B]/40 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-yatiya-dark-cocoa/70 via-yatiya-dark-cocoa/40 to-transparent" />
 
             {/* Banner Content */}
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between w-full h-full px-6 md:px-[80px] py-10">
               
               {/* Left Content */}
-              <div className="flex flex-col text-[#3B2A16] max-w-[500px] text-center md:text-left">
-                <span className="text-yatiya-gold text-xs md:text-sm font-bold uppercase tracking-[0.2em] mb-3 md:mb-4">
+              <div className="flex flex-col text-yatiya-light-text max-w-[500px] text-center md:text-left">
+                <span className="text-yatiya-light-gold text-xs md:text-sm font-bold uppercase tracking-[0.2em] mb-3 md:mb-4">
                   Limited Time Offer
                 </span>
-                <h2 className="text-4xl md:text-[56px] font-display leading-[1.1] mb-4">
+                <h2 className="text-4xl md:text-[56px] font-display leading-[1.1] mb-4 text-yatiya-light-text">
                   Deals Of The Day
                 </h2>
-                <p className="text-[#CFC6B5] text-sm md:text-base leading-relaxed mb-6 md:mb-10 max-w-[400px]">
+                <p className="text-yatiya-light-text text-sm md:text-base leading-relaxed mb-6 md:mb-10 max-w-[400px]">
                   Discover exclusive couture styles at special prices for a limited time. Elevate your wardrobe with our premium collection.
                 </p>
 
                 {/* Countdown Timer */}
-                <div className="flex items-center justify-center md:justify-start gap-4 md:gap-6 mb-8 md:mb-10">
+                <div className="flex items-center justify-center md:justify-start gap-4 md:gap-6 mb-8 md:mb-10 text-yatiya-light-text">
                   <div className="flex flex-col items-center">
-                    <div className="w-[50px] h-[50px] md:w-[60px] md:h-[60px] bg-[#2B211B]/20 backdrop-blur-md flex items-center justify-center text-xl md:text-2xl font-semibold border border-[rgba(198,161,91,0.55)]">
+                    <div className="w-[50px] h-[50px] md:w-[60px] md:h-[60px] bg-[rgba(52,39,25,0.55)] backdrop-blur-md flex items-center justify-center text-xl md:text-2xl font-semibold border border-yatiya-rich-gold">
                       {formatTime(timeLeft.days)}
                     </div>
-                    <span className="text-[10px] md:text-xs uppercase tracking-wider mt-2 text-[#CFC6B5]">Days</span>
+                    <span className="text-[10px] md:text-xs uppercase tracking-wider mt-2 text-yatiya-light-gold">Days</span>
                   </div>
-                  <span className="text-2xl font-light text-[#D6BC7A] -mt-6">:</span>
+                  <span className="text-2xl font-light text-yatiya-light-gold -mt-6">:</span>
                   
                   <div className="flex flex-col items-center">
-                    <div className="w-[50px] h-[50px] md:w-[60px] md:h-[60px] bg-[#2B211B]/20 backdrop-blur-md flex items-center justify-center text-xl md:text-2xl font-semibold border border-[rgba(198,161,91,0.55)]">
+                    <div className="w-[50px] h-[50px] md:w-[60px] md:h-[60px] bg-[rgba(52,39,25,0.55)] backdrop-blur-md flex items-center justify-center text-xl md:text-2xl font-semibold border border-yatiya-rich-gold">
                       {formatTime(timeLeft.hours)}
                     </div>
-                    <span className="text-[10px] md:text-xs uppercase tracking-wider mt-2 text-[#CFC6B5]">Hrs</span>
+                    <span className="text-[10px] md:text-xs uppercase tracking-wider mt-2 text-yatiya-light-gold">Hrs</span>
                   </div>
-                  <span className="text-2xl font-light text-[#D6BC7A] -mt-6">:</span>
+                  <span className="text-2xl font-light text-yatiya-light-gold -mt-6">:</span>
 
                   <div className="flex flex-col items-center">
-                    <div className="w-[50px] h-[50px] md:w-[60px] md:h-[60px] bg-[#2B211B]/20 backdrop-blur-md flex items-center justify-center text-xl md:text-2xl font-semibold border border-[rgba(198,161,91,0.55)]">
+                    <div className="w-[50px] h-[50px] md:w-[60px] md:h-[60px] bg-[rgba(52,39,25,0.55)] backdrop-blur-md flex items-center justify-center text-xl md:text-2xl font-semibold border border-yatiya-rich-gold">
                       {formatTime(timeLeft.minutes)}
                     </div>
-                    <span className="text-[10px] md:text-xs uppercase tracking-wider mt-2 text-[#CFC6B5]">Mins</span>
+                    <span className="text-[10px] md:text-xs uppercase tracking-wider mt-2 text-yatiya-light-gold">Mins</span>
                   </div>
-                  <span className="text-2xl font-light text-[#D6BC7A] -mt-6">:</span>
+                  <span className="text-2xl font-light text-yatiya-light-gold -mt-6">:</span>
 
                   <div className="flex flex-col items-center">
-                    <div className="w-[50px] h-[50px] md:w-[60px] md:h-[60px] bg-[#2B211B]/20 backdrop-blur-md flex items-center justify-center text-xl md:text-2xl font-semibold border border-[rgba(198,161,91,0.55)]">
+                    <div className="w-[50px] h-[50px] md:w-[60px] md:h-[60px] bg-[rgba(52,39,25,0.55)] backdrop-blur-md flex items-center justify-center text-xl md:text-2xl font-semibold border border-yatiya-rich-gold">
                       {formatTime(timeLeft.seconds)}
                     </div>
-                    <span className="text-[10px] md:text-xs uppercase tracking-wider mt-2 text-[#CFC6B5]">Secs</span>
+                    <span className="text-[10px] md:text-xs uppercase tracking-wider mt-2 text-yatiya-light-gold">Secs</span>
                   </div>
                 </div>
 
                 <Link 
                   href="/collection" 
-                  className="inline-flex items-center justify-center bg-[#2B211B] text-[#D6BC7A] hover:bg-[#B88A3B] hover:text-[#3B2A16] transition-colors duration-300 px-8 py-3.5 text-xs font-bold uppercase tracking-widest w-fit mx-auto md:mx-0"
+                  className="inline-flex items-center justify-center bg-yatiya-antique-gold text-yatiya-light-text hover:bg-yatiya-deep-bronze transition-colors duration-300 px-8 py-3.5 text-xs font-bold uppercase tracking-widest w-fit mx-auto md:mx-0"
                 >
-                  Shop Collection <span className="ml-2">→</span>
+                  Shop Collection <span className="ml-2 text-yatiya-light-text">→</span>
                 </Link>
               </div>
 
               {/* Right Side (Optional Video/Play button area) */}
               <div className="hidden md:flex flex-col items-center justify-center mr-[10%]">
-                <button className="w-20 h-20 rounded-full bg-[#2B211B]/90 hover:bg-[#B88A3B] text-[#3B2A16] flex items-center justify-center backdrop-blur-sm transition-all duration-300 hover:scale-105 group relative">
+                <button className="w-20 h-20 rounded-full bg-yatiya-antique-gold hover:bg-yatiya-deep-bronze text-yatiya-light-text flex items-center justify-center backdrop-blur-sm transition-all duration-300 hover:scale-105 group relative">
                   <div className="absolute inset-0 rounded-full border border-yatiya-gold animate-ping opacity-20 group-hover:opacity-40" />
                   <Play className="w-8 h-8 ml-1" fill="currentColor" />
                 </button>
@@ -199,8 +244,8 @@ export function DealsAndBestSeller() {
       <div className="w-full max-w-[1920px] mx-auto px-6 md:px-[30px] pt-[60px] md:pt-[70px] mt-[60px] md:mt-[70px] border-t border-[rgba(198,161,91,0.3)]">
         <Reveal direction="up" delay={0.2}>
           <div className="flex flex-col items-center text-center">
-            <h2 className="text-3xl md:text-[34px] font-display text-[#D6BC7A]">Our Best Seller</h2>
-            <div className="w-[60px] h-[2px] bg-[#2B211B] mt-[15px]" />
+            <h2 className="text-3xl md:text-[34px] font-display text-yatiya-light-gold">Our Best Seller</h2>
+            <div className="w-[60px] h-[2px] bg-yatiya-antique-gold mt-[15px]" />
           </div>
         </Reveal>
 
@@ -210,7 +255,7 @@ export function DealsAndBestSeller() {
           {/* Navigation Arrows */}
           <button 
             onClick={() => scroll('left')}
-            className="absolute left-0 top-[35%] -translate-y-1/2 -translate-x-1/2 z-20 w-12 h-12 bg-[#F8F4EC] border border-[#C6A15B] shadow-lg rounded-full flex items-center justify-center text-[#C6A15B] hover:bg-[#B88A3B] hover:text-[#080808] hover:text-yatiya-gold hover:border-[#C6A15B] transition-all opacity-0 group-hover:opacity-100 hidden md:flex"
+            className="absolute left-0 top-[35%] -translate-y-1/2 -translate-x-1/2 z-20 w-12 h-12 bg-yatiya-ivory border border-yatiya-roman-gold shadow-lg rounded-full flex items-center justify-center text-yatiya-roman-gold hover:bg-[#B88A3B] hover:text-yatiya-deep-brown hover:text-yatiya-roman-gold hover:border-yatiya-roman-gold transition-all opacity-0 group-hover:opacity-100 hidden md:flex"
             aria-label="Previous products"
           >
             <ChevronLeft className="w-6 h-6" />
@@ -218,7 +263,7 @@ export function DealsAndBestSeller() {
           
           <button 
             onClick={() => scroll('right')}
-            className="absolute right-0 top-[35%] -translate-y-1/2 translate-x-1/2 z-20 w-12 h-12 bg-[#F8F4EC] border border-[#C6A15B] shadow-lg rounded-full flex items-center justify-center text-[#C6A15B] hover:bg-[#B88A3B] hover:text-[#080808] hover:text-yatiya-gold hover:border-[#C6A15B] transition-all opacity-0 group-hover:opacity-100 hidden md:flex"
+            className="absolute right-0 top-[35%] -translate-y-1/2 translate-x-1/2 z-20 w-12 h-12 bg-yatiya-ivory border border-yatiya-roman-gold shadow-lg rounded-full flex items-center justify-center text-yatiya-roman-gold hover:bg-[#B88A3B] hover:text-yatiya-deep-brown hover:text-yatiya-roman-gold hover:border-yatiya-roman-gold transition-all opacity-0 group-hover:opacity-100 hidden md:flex"
             aria-label="Next products"
           >
             <ChevronRight className="w-6 h-6" />
@@ -240,14 +285,14 @@ export function DealsAndBestSeller() {
                 className="snap-start shrink-0 w-[calc(100%-1rem)] sm:w-[calc(50%-0.5rem)] md:w-[calc(33.333%-20px)] lg:w-[calc(25%-22.5px)] xl:w-[calc(20%-24px)] flex flex-col"
               >
                 {/* Image Container */}
-                <div className="relative w-full aspect-[282/310] overflow-hidden bg-[#F7EEDB] mb-[18px]">
+                <div className="relative w-full aspect-[282/310] overflow-hidden bg-yatiya-ivory mb-[18px]">
                   {product.isSale && (
-                    <div className="absolute top-3 left-3 z-10 bg-[#2B211B] text-[#080808] text-[10px] font-bold uppercase tracking-wider px-2.5 py-1">
+                    <div className="absolute top-3 left-3 z-10 bg-yatiya-antique-gold text-yatiya-light-text text-[10px] font-bold uppercase tracking-wider px-2.5 py-1">
                       Sale
                     </div>
                   )}
                   
-                  <Link href={`/product/${product.id}`} className="block w-full h-full">
+                  <Link href={`/products/${product.name.toLowerCase().replace(/ /g, '-')}`} className="block w-full h-full">
                     <SmartImage 
                       src={product.image}
                       alt={product.name}
@@ -258,27 +303,27 @@ export function DealsAndBestSeller() {
                 </div>
 
                 {/* Product Info */}
-                <div className="flex flex-col items-center text-center px-1">
-                  <span className="text-[#A9956A] text-[11px] font-medium tracking-wide mb-[8px]">
+                <div className="flex flex-col items-center text-center p-4 bg-yatiya-ivory">
+                  <span className="text-yatiya-warm-bronze text-[11px] font-medium tracking-wide mb-[8px]">
                     {product.category}
                   </span>
                   
-                  <Link href={`/product/${product.id}`} className="text-yatiya-text hover:text-yatiya-gold transition-colors text-sm md:text-[15px] font-medium mb-[8px] line-clamp-2">
+                  <Link href={`/products/${product.name.toLowerCase().replace(/ /g, '-')}`} className="text-yatiya-deep-brown hover:text-yatiya-antique-gold transition-colors text-sm md:text-[15px] font-medium mb-[8px] line-clamp-2">
                     {product.name}
                   </Link>
                   
                   <div className="flex items-center justify-center gap-2.5 mb-[8px]">
-                    <span className="text-[#D6BC7A] font-semibold text-sm md:text-[15px]">
+                    <span className="text-yatiya-warm-bronze font-semibold text-sm md:text-[15px]">
                       ₹{product.price.toLocaleString()}
                     </span>
                     {product.originalPrice && (
-                      <span className="text-[#999999] line-through text-xs md:text-[13px]">
+                      <span className="text-[#6B5740]/60 line-through text-xs md:text-[13px]">
                         ₹{product.originalPrice.toLocaleString()}
                       </span>
                     )}
                   </div>
                   
-                  <div className="flex text-yatiya-gold gap-0.5">
+                  <div className="flex text-yatiya-rich-gold gap-0.5">
                     {[...Array(5)].map((_, i) => (
                       <Star key={i} className="w-3 h-3 fill-current" />
                     ))}
@@ -286,14 +331,14 @@ export function DealsAndBestSeller() {
 
                   {/* Action Buttons */}
                   <div className="flex items-center justify-center gap-2 mt-[14px] w-full max-w-[240px]">
-                    <button className="flex-1  hover:bg-[#B88A3B] border border-yatiya-gold text-yatiya-gold-light hover:text-[#D6BC7A] py-2 px-3 text-[11px] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 shrink-0">
+                    <button onClick={() => handleAddToCart(product)} className="flex-1 hover:bg-yatiya-antique-gold border border-yatiya-antique-gold text-yatiya-deep-brown hover:text-yatiya-light-text py-2 px-3 text-[11px] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 shrink-0">
                       <ShoppingCart className="w-3.5 h-3.5" />
                       + Add to cart
                     </button>
-                    <button className="bg-[#F7EEDB] hover:bg-[#B88A3B] border border-yatiya-gold-light hover:border-[#C6A15B] text-yatiya-gold hover:text-[#D6BC7A] w-[34px] h-[34px] flex items-center justify-center transition-colors shrink-0">
+                    <button className="bg-transparent hover:bg-yatiya-antique-gold border border-yatiya-antique-gold text-yatiya-deep-brown hover:text-yatiya-light-text w-[34px] h-[34px] flex items-center justify-center transition-colors shrink-0">
                       <Heart className="w-4 h-4" />
                     </button>
-                    <button className="bg-[#F7EEDB] hover:bg-[#B88A3B] border border-yatiya-gold-light hover:border-[#C6A15B] text-yatiya-gold hover:text-[#D6BC7A] w-[34px] h-[34px] flex items-center justify-center transition-colors shrink-0">
+                    <button className="bg-transparent hover:bg-yatiya-antique-gold border border-yatiya-antique-gold text-yatiya-deep-brown hover:text-yatiya-light-text w-[34px] h-[34px] flex items-center justify-center transition-colors shrink-0">
                       <Eye className="w-4 h-4" />
                     </button>
                   </div>

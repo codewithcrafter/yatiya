@@ -11,7 +11,7 @@ export function CategoryStrip() {
   const isInView = useInView(ref, { once: true, margin: "-10%" });
 
   return (
-    <section ref={ref} className="w-full py-16 md:py-24 bg-yatiya-ivory border-b border-[#E9E3DD]">
+    <section ref={ref} className="w-full py-16 md:py-24 bg-yatiya-ivory border-b border-yatiya-light-gold">
       <div className="max-w-[1300px] mx-auto px-6">
         
         {/* CENTERED HEADING */}
@@ -21,7 +21,7 @@ export function CategoryStrip() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="text-center mb-12"
         >
-          <h2 className="text-[12px] font-sans font-bold tracking-[0.2em] uppercase text-[#641F32]">
+          <h2 className="text-[12px] font-sans font-bold tracking-[0.2em] uppercase text-yatiya-burgundy">
             Shop by Category
           </h2>
         </motion.div>
@@ -40,7 +40,7 @@ export function CategoryStrip() {
                 className="group flex flex-col items-center w-[120px] md:w-[140px] cursor-pointer"
               >
                 {/* Circle Container */}
-                <div className="w-[100px] h-[100px] md:w-[120px] md:h-[120px] rounded-full overflow-hidden mb-5 bg-[#F7F0E8] relative shadow-none group-hover:shadow-[0_10px_40px_-10px_rgba(36,33,36,0.15)] transition-all duration-500 ring-0 group-hover:ring-1 ring-yatiya-gold/50 ring-offset-4 ring-offset-yatiya-ivory">
+                <div className="w-[100px] h-[100px] md:w-[120px] md:h-[120px] rounded-full overflow-hidden mb-5 bg-yatiya-ivory relative shadow-none group-hover:shadow-[0_10px_40px_-10px_rgba(36,33,36,0.15)] transition-all duration-500 ring-0 group-hover:ring-1 ring-yatiya-gold/50 ring-offset-4 ring-offset-yatiya-ivory">
                   <motion.div
                     className="w-full h-full"
                     whileHover={{ scale: 1.06 }}
@@ -57,10 +57,10 @@ export function CategoryStrip() {
 
                 {/* Label */}
                 <div className="flex flex-col items-center transform transition-transform duration-300 group-hover:-translate-y-[3px]">
-                  <span className="text-[11px] font-sans font-bold tracking-[0.15em] uppercase text-yatiya-black text-center whitespace-nowrap group-hover:text-[#641F32] transition-colors">
+                  <span className="text-[11px] font-sans font-bold tracking-[0.15em] uppercase text-yatiya-dark-cocoa text-center whitespace-nowrap group-hover:text-yatiya-burgundy transition-colors">
                     {cat.name}
                   </span>
-                  <div className="h-[1px] w-0 bg-yatiya-gold mt-1 transition-all duration-300 group-hover:w-full" />
+                  <div className="h-[1px] w-0 bg-yatiya-roman-gold mt-1 transition-all duration-300 group-hover:w-full" />
                 </div>
               </Link>
             </motion.div>

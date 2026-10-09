@@ -2,7 +2,7 @@ import { SmartImage } from "@/components/ui/SmartImage";
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-yatiya-ivory text-yatiya-black">
+    <div className="min-h-screen bg-yatiya-ivory text-yatiya-dark-cocoa">
       {/* HERO */}
       <div className="w-full h-[60vh] relative overflow-hidden bg-[#604F6F]">
         <SmartImage 
@@ -23,11 +23,11 @@ export default function AboutPage() {
 
       {/* CONTENT */}
       <div className="max-w-[800px] mx-auto px-6 py-24 text-center">
-        <h2 className="text-2xl font-display uppercase tracking-widest mb-10 text-[#641F32]">
+        <h2 className="text-2xl font-display uppercase tracking-widest mb-10 text-yatiya-burgundy">
           The Quiet Luxury House
         </h2>
         
-        <div className="flex flex-col gap-8 text-[15px] font-sans text-yatiya-black/80 leading-relaxed">
+        <div className="flex flex-col gap-8 text-[15px] font-sans text-yatiya-dark-cocoa/80 leading-relaxed">
           <p>
             Yatiya was born from a desire to bring a sense of quiet, understated luxury to Indian fashion. We believe that true elegance lies in restraint, impeccable tailoring, and the finest fabrics.
           </p>
@@ -40,16 +40,16 @@ export default function AboutPage() {
         </div>
       </div>
 
-      <div className="w-full bg-[#E9E3DD] py-24">
+      <div className="w-full bg-yatiya-light-gold py-24">
         <div className="max-w-[1200px] mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
           <div className="w-full md:w-1/2">
-            <h2 className="text-2xl font-display uppercase tracking-widest mb-6 text-[#641F32]">
+            <h2 className="text-2xl font-display uppercase tracking-widest mb-6 text-yatiya-burgundy">
               Our Craft
             </h2>
-            <p className="text-[14px] font-sans text-yatiya-black/80 leading-relaxed mb-6">
+            <p className="text-[14px] font-sans text-yatiya-dark-cocoa/80 leading-relaxed mb-6">
               We work directly with master artisans across India, ensuring that traditional techniques are preserved and celebrated. Our commitment to quality means that every stitch, every seam, and every detail is perfected before a garment reaches you.
             </p>
-            <p className="text-[14px] font-sans text-yatiya-black/80 leading-relaxed">
+            <p className="text-[14px] font-sans text-yatiya-dark-cocoa/80 leading-relaxed">
               At Yatiya, luxury is not just in the final product, but in the process of its creation. We are dedicated to ethical practices, sustainable sourcing, and creating fashion that you will cherish for a lifetime.
             </p>
           </div>

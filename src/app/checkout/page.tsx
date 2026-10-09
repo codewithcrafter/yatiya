@@ -1,228 +1,391 @@
 "use client";
 
-import Link from "next/link";
-import { useState } from "react";
-import { SmartImage } from "@/components/ui/SmartImage";
-import { useCart } from "@/context/CartContext";
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useCart, CartItem } from '@/context/CartContext';
+import { useCustomer } from '@/context/CustomerContext';
+import { SmartImage } from '@/components/ui/SmartImage';
 
-export default function CheckoutPage() {
-  const { items, getCartTotal } = useCart();
+import { Suspense } from 'react';
+
+function CheckoutContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { items: cartItems, getCartTotal, clearCart } = useCart();
+  const { addOrder } = useCustomer();
+  const [mounted, setMounted] = useState(false);
   
-  const subtotal = getCartTotal();
-  const shipping = subtotal > 0 ? (subtotal > 2999 ? 0 : 250) : 0;
-  const total = subtotal + shipping;
+  // Checkout State
+  const [checkoutItems, setCheckoutItems] = useState<CartItem[]>([]);
+  const [isBuyNow, setIsBuyNow] = useState(false);
+  
+  // Customer Details
+  const [fullName, setFullName] = useState('');
+  const [mobile, setMobile] = useState('');
+  const [email, setEmail] = useState('');
+  
+  // Shipping Address
+  const [addressLine1, setAddressLine1] = useState('');
+  const [addressLine2, setAddressLine2] = useState('');
+  const [landmark, setLandmark] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [pincode, setPincode] = useState('');
+  const [country, setCountry] = useState('India');
+  
+  // Payment
+  const [paymentMethod, setPaymentMethod] = useState('ONLINE');
+  
+  // Coupon & Totals
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<string | null>(null);
+  const [discountAmount, setDiscountAmount] = useState(0);
+  
+  // Validation Errors
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  const [step, setStep] = useState(1);
+  useEffect(() => {
+    setMounted(true);
+    
+    // Check if buy now flow
+    const buyNowData = sessionStorage.getItem('yatiya-buynow');
+    if (buyNowData && searchParams.get('type') === 'buynow') {
+      try {
+        const item = JSON.parse(buyNowData);
+        setCheckoutItems([item]);
+        setIsBuyNow(true);
+      } catch (e) {
+        setCheckoutItems(cartItems);
+      }
+    } else {
+      setCheckoutItems(cartItems);
+    }
+  }, [cartItems, searchParams]);
 
-  if (items.length === 0) {
+  if (!mounted) return <div className="min-h-screen bg-yatiya-ivory"></div>;
+
+  if (checkoutItems.length === 0) {
     return (
-      <div className="min-h-screen bg-yatiya-ivory flex flex-col items-center justify-center pt-24 pb-32">
-        <p className="text-[14px] font-sans text-yatiya-black/70 mb-8 uppercase tracking-widest">
-          Your bag is empty.
-        </p>
-        <Link 
-          href="/collections/women" 
-          className="bg-yatiya-black text-yatiya-ivory px-10 py-4 text-[12px] font-sans tracking-[0.15em] font-bold uppercase hover:bg-[#641F32] transition-colors"
-        >
-          RETURN TO STORE
+      <div className="min-h-screen bg-yatiya-ivory flex flex-col items-center justify-center py-20 px-4">
+        <h1 className="text-3xl font-display text-yatiya-dark-cocoa mb-4">Checkout</h1>
+        <p className="text-yatiya-dark-cocoa/70 mb-8 font-sans">Your cart is currently empty.</p>
+        <Link href="/products" className="bg-yatiya-antique-gold text-yatiya-light-text border border-yatiya-antique-gold px-8 py-4 text-[12px] uppercase tracking-widest font-medium hover:bg-yatiya-deep-bronze hover:border-yatiya-deep-bronze hover:text-yatiya-light-text transition-colors">
+          Continue Shopping
         </Link>
       </div>
     );
   }
 
+  // Calculations
+  const subtotal = checkoutItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+  const shipping = subtotal > 10000 ? 0 : 250;
+  const total = subtotal - discountAmount + shipping;
+
+  const handleApplyCoupon = () => {
+    if (couponCode.toUpperCase() === 'YATIYA10') {
+      const discount = Math.floor(subtotal * 0.1);
+      setDiscountAmount(discount);
+      setAppliedCoupon('YATIYA10');
+      setErrors({ ...errors, coupon: '' });
+    } else {
+      setErrors({ ...errors, coupon: 'Invalid coupon code.' });
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setCouponCode('');
+    setAppliedCoupon(null);
+    setDiscountAmount(0);
+  };
+
+  const validateForm = () => {
+    const newErrors: { [key: string]: string } = {};
+    
+    if (!fullName.trim()) newErrors.fullName = 'Full Name is required.';
+    if (!mobile.trim() || !/^\d{10}$/.test(mobile)) newErrors.mobile = 'Valid 10-digit mobile number is required.';
+    if (!email.trim() || !/^\S+@\S+\.\S+$/.test(email)) newErrors.email = 'Valid email is required.';
+    
+    if (!addressLine1.trim()) newErrors.addressLine1 = 'Address Line 1 is required.';
+    if (!city.trim()) newErrors.city = 'City is required.';
+    if (!state.trim()) newErrors.state = 'State is required.';
+    if (!pincode.trim() || !/^\d{6}$/.test(pincode)) newErrors.pincode = 'Valid 6-digit pincode is required.';
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handlePlaceOrder = () => {
+    if (validateForm()) {
+      // Mock order placement
+      const orderRef = 'YAT-DEMO-' + Math.floor(10000 + Math.random() * 90000);
+      
+      // Clear specific storages
+      if (isBuyNow) {
+        sessionStorage.removeItem('yatiya-buynow');
+      } else {
+        clearCart();
+      }
+      
+      // Store mock order info in session for success page
+      
+    const mockOrder = {
+      id: orderRef,
+      date: new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' }),
+      status: 'CONFIRMED',
+      items: checkoutItems.map(i => ({
+        productId: i.productId,
+        title: i.title,
+        image: i.image,
+        size: i.size,
+        color: i.color,
+        quantity: i.quantity,
+        price: i.price,
+        customMeasurements: i.customMeasurements
+      })),
+      subtotal: subtotal,
+      discount: discountAmount,
+      shipping: shipping,
+      total: total,
+      payment: {
+        method: paymentMethod,
+        status: paymentMethod === 'ONLINE' ? 'PAID' : 'PENDING'
+      },
+      shippingAddress: {
+        fullName: fullName,
+        phone: mobile,
+        addressLine1: addressLine1,
+        addressLine2: addressLine2,
+        city: city,
+        state: state,
+        pincode: pincode,
+        country: country
+      },
+      shipment: {
+        trackingId: 'YAT-TRACK-' + Math.floor(10000 + Math.random() * 90000),
+        carrier: 'Delhivery',
+        status: 'In Transit'
+      }
+    };
+    addOrder(mockOrder as any);
+    
+    sessionStorage.setItem('yatiya-last-order', JSON.stringify({
+        orderRef,
+        total,
+        email,
+        paymentMethod
+      }));
+      
+      router.push('/checkout/success');
+    } else {
+      // Scroll to top to show errors
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-yatiya-ivory text-yatiya-black">
-      <div className="max-w-[1200px] mx-auto px-6 py-12 md:py-20 flex flex-col-reverse lg:flex-row gap-12 lg:gap-20">
-        
-        {/* LEFT COLUMN - FORMS */}
-        <div className="w-full lg:w-[55%]">
-          
-          {/* BREADCRUMBS */}
-          <div className="flex items-center gap-3 text-[10px] font-sans uppercase tracking-[0.15em] mb-12">
-            <Link href="/cart" className="text-yatiya-black/50 hover:text-yatiya-black">Cart</Link>
-            <span className="text-yatiya-black/30">&gt;</span>
-            <span className={step >= 1 ? "text-[#641F32] font-bold" : "text-yatiya-black/50"}>Information</span>
-            <span className="text-yatiya-black/30">&gt;</span>
-            <span className={step >= 2 ? "text-[#641F32] font-bold" : "text-yatiya-black/50"}>Shipping</span>
-            <span className="text-yatiya-black/30">&gt;</span>
-            <span className={step >= 3 ? "text-[#641F32] font-bold" : "text-yatiya-black/50"}>Payment</span>
+    <div className="min-h-screen bg-yatiya-ivory py-12 px-6 font-sans text-yatiya-dark-cocoa">
+      <div className="max-w-[1200px] mx-auto">
+        <div className="mb-10 text-center lg:text-left">
+          <Link href="/" className="text-2xl font-display uppercase tracking-widest text-yatiya-dark-cocoa hover:opacity-80">
+            Yatiya Couture
+          </Link>
+          <div className="flex items-center justify-center lg:justify-start gap-2 text-[12px] text-yatiya-dark-cocoa/60 uppercase tracking-widest mt-6">
+            <Link href="/cart" className="hover:text-yatiya-dark-cocoa">Cart</Link>
+            <span>/</span>
+            <span className="text-yatiya-dark-cocoa font-medium">Checkout</span>
           </div>
+        </div>
 
-          <form className="flex flex-col gap-8" onSubmit={(e) => { e.preventDefault(); if(step < 3) setStep(step + 1); }}>
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
+          
+          {/* LEFT COLUMN - FORMS */}
+          <div className="w-full lg:w-[55%] flex flex-col gap-10">
             
-            {/* STEP 1: INFORMATION */}
-            <div className={`flex flex-col gap-6 ${step !== 1 && 'opacity-40 pointer-events-none hidden'}`}>
-              <div>
-                <h2 className="text-[18px] font-display uppercase tracking-widest mb-6">Contact Information</h2>
-                <input 
-                  type="email" 
-                  placeholder="Email or mobile phone number" 
-                  required
-                  className="w-full bg-transparent border border-[#E9E3DD] p-4 text-[13px] font-sans focus:outline-none focus:border-[#641F32] transition-colors"
-                />
-              </div>
-
-              <div>
-                <h2 className="text-[18px] font-display uppercase tracking-widest mb-6 mt-4">Shipping Address</h2>
-                <div className="grid grid-cols-2 gap-4">
-                  <select className="col-span-2 w-full bg-transparent border border-[#E9E3DD] p-4 text-[13px] font-sans focus:outline-none focus:border-[#641F32] transition-colors appearance-none rounded-none">
-                    <option>India</option>
-                    <option>United States</option>
-                    <option>United Kingdom</option>
-                    <option>United Arab Emirates</option>
-                  </select>
-                  <input type="text" placeholder="First name" required className="col-span-1 bg-transparent border border-[#E9E3DD] p-4 text-[13px] font-sans focus:outline-none focus:border-[#641F32] transition-colors" />
-                  <input type="text" placeholder="Last name" required className="col-span-1 bg-transparent border border-[#E9E3DD] p-4 text-[13px] font-sans focus:outline-none focus:border-[#641F32] transition-colors" />
-                  <input type="text" placeholder="Address" required className="col-span-2 bg-transparent border border-[#E9E3DD] p-4 text-[13px] font-sans focus:outline-none focus:border-[#641F32] transition-colors" />
-                  <input type="text" placeholder="Apartment, suite, etc. (optional)" className="col-span-2 bg-transparent border border-[#E9E3DD] p-4 text-[13px] font-sans focus:outline-none focus:border-[#641F32] transition-colors" />
-                  <input type="text" placeholder="City" required className="col-span-1 md:col-span-1 bg-transparent border border-[#E9E3DD] p-4 text-[13px] font-sans focus:outline-none focus:border-[#641F32] transition-colors" />
-                  <select className="col-span-1 md:col-span-1 bg-transparent border border-[#E9E3DD] p-4 text-[13px] font-sans focus:outline-none focus:border-[#641F32] transition-colors appearance-none rounded-none">
-                    <option>State</option>
-                    <option>Maharashtra</option>
-                    <option>Delhi</option>
-                    <option>Karnataka</option>
-                  </select>
-                  <input type="text" placeholder="PIN code" required className="col-span-2 md:col-span-2 bg-transparent border border-[#E9E3DD] p-4 text-[13px] font-sans focus:outline-none focus:border-[#641F32] transition-colors" />
-                  <input type="tel" placeholder="Phone" required className="col-span-2 bg-transparent border border-[#E9E3DD] p-4 text-[13px] font-sans focus:outline-none focus:border-[#641F32] transition-colors" />
+            {/* Customer Details */}
+            <section>
+              <h2 className="text-lg font-display uppercase tracking-widest mb-6 pb-2 border-b border-yatiya-light-gold">Customer Information</h2>
+              <div className="space-y-4">
+                <div>
+                  <input type="email" placeholder="Email Address *" value={email} onChange={e => setEmail(e.target.value)} className={`w-full bg-yatiya-cream border p-4 text-[14px] focus:outline-none focus:border-yatiya-roman-gold ${errors.email ? 'border-red-500' : 'border-yatiya-light-gold'}`} />
+                  {errors.email && <p className="text-red-500 text-[11px] mt-1">{errors.email}</p>}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <input type="text" placeholder="Full Name *" value={fullName} onChange={e => setFullName(e.target.value)} className={`w-full bg-yatiya-cream border p-4 text-[14px] focus:outline-none focus:border-yatiya-roman-gold ${errors.fullName ? 'border-red-500' : 'border-yatiya-light-gold'}`} />
+                    {errors.fullName && <p className="text-red-500 text-[11px] mt-1">{errors.fullName}</p>}
+                  </div>
+                  <div>
+                    <input type="tel" placeholder="Mobile Number *" value={mobile} onChange={e => setMobile(e.target.value)} maxLength={10} className={`w-full bg-yatiya-cream border p-4 text-[14px] focus:outline-none focus:border-yatiya-roman-gold ${errors.mobile ? 'border-red-500' : 'border-yatiya-light-gold'}`} />
+                    {errors.mobile && <p className="text-red-500 text-[11px] mt-1">{errors.mobile}</p>}
+                  </div>
                 </div>
               </div>
-              
-              <button type="submit" className="w-full md:w-auto self-end bg-[#641F32] text-yatiya-ivory px-10 py-5 text-[12px] font-sans tracking-[0.2em] font-bold uppercase hover:bg-yatiya-black transition-colors mt-4">
-                Continue to Shipping
+            </section>
+
+            {/* Shipping Address */}
+            <section>
+              <h2 className="text-lg font-display uppercase tracking-widest mb-6 pb-2 border-b border-yatiya-light-gold">Shipping Address</h2>
+              <div className="space-y-4">
+                <div>
+                  <input type="text" disabled value={country} className="w-full bg-yatiya-ivory border border-yatiya-light-gold p-4 text-[14px] text-yatiya-dark-cocoa/70 cursor-not-allowed" />
+                </div>
+                <div>
+                  <input type="text" placeholder="Address Line 1 *" value={addressLine1} onChange={e => setAddressLine1(e.target.value)} className={`w-full bg-yatiya-cream border p-4 text-[14px] focus:outline-none focus:border-yatiya-roman-gold ${errors.addressLine1 ? 'border-red-500' : 'border-yatiya-light-gold'}`} />
+                  {errors.addressLine1 && <p className="text-red-500 text-[11px] mt-1">{errors.addressLine1}</p>}
+                </div>
+                <div>
+                  <input type="text" placeholder="Address Line 2 (Optional)" value={addressLine2} onChange={e => setAddressLine2(e.target.value)} className="w-full bg-yatiya-cream border border-yatiya-light-gold p-4 text-[14px] focus:outline-none focus:border-yatiya-roman-gold" />
+                </div>
+                <div>
+                  <input type="text" placeholder="Landmark (Optional)" value={landmark} onChange={e => setLandmark(e.target.value)} className="w-full bg-yatiya-cream border border-yatiya-light-gold p-4 text-[14px] focus:outline-none focus:border-yatiya-roman-gold" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <input type="text" placeholder="City *" value={city} onChange={e => setCity(e.target.value)} className={`w-full bg-yatiya-cream border p-4 text-[14px] focus:outline-none focus:border-yatiya-roman-gold ${errors.city ? 'border-red-500' : 'border-yatiya-light-gold'}`} />
+                    {errors.city && <p className="text-red-500 text-[11px] mt-1">{errors.city}</p>}
+                  </div>
+                  <div>
+                    <input type="text" placeholder="State *" value={state} onChange={e => setState(e.target.value)} className={`w-full bg-yatiya-cream border p-4 text-[14px] focus:outline-none focus:border-yatiya-roman-gold ${errors.state ? 'border-red-500' : 'border-yatiya-light-gold'}`} />
+                    {errors.state && <p className="text-red-500 text-[11px] mt-1">{errors.state}</p>}
+                  </div>
+                  <div>
+                    <input type="text" placeholder="Pincode *" value={pincode} onChange={e => setPincode(e.target.value)} maxLength={6} className={`w-full bg-yatiya-cream border p-4 text-[14px] focus:outline-none focus:border-yatiya-roman-gold ${errors.pincode ? 'border-red-500' : 'border-yatiya-light-gold'}`} />
+                    {errors.pincode && <p className="text-red-500 text-[11px] mt-1">{errors.pincode}</p>}
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Payment Method */}
+            <section>
+              <h2 className="text-lg font-display uppercase tracking-widest mb-6 pb-2 border-b border-yatiya-light-gold">Payment Method</h2>
+              <div className="space-y-3">
+                <label className={`flex items-center p-4 border cursor-pointer transition-colors ${paymentMethod === 'ONLINE' ? 'border-yatiya-roman-gold bg-yatiya-ivory/50' : 'border-yatiya-light-gold bg-yatiya-cream hover:border-yatiya-roman-gold'}`}>
+                  <input type="radio" name="payment" value="ONLINE" checked={paymentMethod === 'ONLINE'} onChange={(e) => setPaymentMethod(e.target.value)} className="w-4 h-4 text-yatiya-roman-gold accent-[#C6A15B]" />
+                  <span className="ml-3 text-[14px] font-medium">Online Payment (Cards, UPI, NetBanking)</span>
+                </label>
+                <label className={`flex items-center p-4 border cursor-pointer transition-colors ${paymentMethod === 'COD' ? 'border-yatiya-roman-gold bg-yatiya-ivory/50' : 'border-yatiya-light-gold bg-yatiya-cream hover:border-yatiya-roman-gold'}`}>
+                  <input type="radio" name="payment" value="COD" checked={paymentMethod === 'COD'} onChange={(e) => setPaymentMethod(e.target.value)} className="w-4 h-4 text-yatiya-roman-gold accent-[#C6A15B]" />
+                  <span className="ml-3 text-[14px] font-medium">Cash on Delivery</span>
+                </label>
+              </div>
+            </section>
+
+            <div className="hidden lg:block mt-4">
+              <button 
+                onClick={handlePlaceOrder}
+                className="w-full bg-yatiya-antique-gold text-yatiya-light-text border border-yatiya-antique-gold py-5 text-[13px] uppercase tracking-[0.2em] font-medium hover:bg-yatiya-deep-bronze hover:border-yatiya-deep-bronze hover:text-yatiya-light-text transition-colors"
+              >
+                Place Order
               </button>
             </div>
-
-            {/* STEP 2: SHIPPING */}
-            <div className={`flex flex-col gap-6 ${step !== 2 && 'hidden'}`}>
-              <div className="border border-[#E9E3DD] rounded-none divide-y divide-[#E9E3DD] p-4 text-[13px] font-sans">
-                <div className="flex justify-between py-2">
-                  <span className="text-yatiya-black/60 w-24">Contact</span>
-                  <span className="flex-1">test@example.com</span>
-                  <button type="button" onClick={() => setStep(1)} className="text-[#641F32] underline text-[11px] uppercase tracking-wider">Change</button>
-                </div>
-                <div className="flex justify-between py-2">
-                  <span className="text-yatiya-black/60 w-24">Ship to</span>
-                  <span className="flex-1">Mumbai, Maharashtra 400001, India</span>
-                  <button type="button" onClick={() => setStep(1)} className="text-[#641F32] underline text-[11px] uppercase tracking-wider">Change</button>
-                </div>
-              </div>
-
-              <div>
-                <h2 className="text-[18px] font-display uppercase tracking-widest mb-6 mt-4">Shipping Method</h2>
-                <div className="border border-[#E9E3DD] p-4 flex justify-between items-center bg-[#F7F0E8]/50">
-                  <div className="flex items-center gap-4">
-                    <input type="radio" checked readOnly className="accent-[#641F32] w-4 h-4" />
-                    <span className="text-[13px] font-sans">Standard Delivery</span>
-                  </div>
-                  <span className="text-[13px] font-sans font-bold">Complimentary</span>
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center mt-4">
-                <button type="button" onClick={() => setStep(1)} className="text-yatiya-black/60 hover:text-yatiya-black text-[12px] font-sans tracking-[0.1em] uppercase transition-colors">
-                  &lt; Return to Information
-                </button>
-                <button type="submit" className="bg-[#641F32] text-yatiya-ivory px-10 py-5 text-[12px] font-sans tracking-[0.2em] font-bold uppercase hover:bg-yatiya-black transition-colors">
-                  Continue to Payment
-                </button>
-              </div>
-            </div>
-
-            {/* STEP 3: PAYMENT */}
-            <div className={`flex flex-col gap-6 ${step !== 3 && 'hidden'}`}>
-              <div>
-                <h2 className="text-[18px] font-display uppercase tracking-widest mb-2">Payment</h2>
-                <p className="text-[12px] font-sans text-yatiya-black/60 mb-6">All transactions are secure and encrypted.</p>
-                
-                <div className="border border-[#E9E3DD] divide-y divide-[#E9E3DD]">
-                  <div className="p-4 flex justify-between items-center bg-[#F7F0E8]/50">
-                    <div className="flex items-center gap-4">
-                      <input type="radio" name="payment" defaultChecked className="accent-[#641F32] w-4 h-4" />
-                      <span className="text-[13px] font-sans">Credit / Debit Card (Razorpay)</span>
-                    </div>
-                  </div>
-                  <div className="p-4 flex justify-between items-center">
-                    <div className="flex items-center gap-4">
-                      <input type="radio" name="payment" className="accent-[#641F32] w-4 h-4" />
-                      <span className="text-[13px] font-sans">UPI / Net Banking</span>
-                    </div>
-                  </div>
-                  <div className="p-4 flex justify-between items-center">
-                    <div className="flex items-center gap-4">
-                      <input type="radio" name="payment" className="accent-[#641F32] w-4 h-4" />
-                      <span className="text-[13px] font-sans">Cash on Delivery</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center mt-4">
-                <button type="button" onClick={() => setStep(2)} className="text-yatiya-black/60 hover:text-yatiya-black text-[12px] font-sans tracking-[0.1em] uppercase transition-colors">
-                  &lt; Return to Shipping
-                </button>
-                <button type="button" onClick={() => alert("Order placed successfully! Integration with Razorpay pending.")} className="bg-yatiya-black text-yatiya-ivory px-10 py-5 text-[12px] font-sans tracking-[0.2em] font-bold uppercase hover:bg-[#641F32] transition-colors">
-                  Complete Order
-                </button>
-              </div>
-            </div>
-
-          </form>
-        </div>
-
-        {/* RIGHT COLUMN - ORDER SUMMARY */}
-        <div className="w-full lg:w-[45%]">
-          <div className="bg-[#F7F0E8] p-8 md:p-10 sticky top-10 border border-[#E9E3DD]">
             
-            <div className="flex flex-col gap-6 max-h-[40vh] overflow-y-auto pr-4 mb-8">
-              {items.map((item) => (
-                <div key={item.id} className="flex gap-4 items-center">
-                  <div className="relative w-16 aspect-[3/4] bg-white border border-[#E9E3DD] shrink-0">
-                    <SmartImage src={item.image} alt={item.title} fill className="object-cover" />
-                    <span className="absolute -top-2 -right-2 w-5 h-5 bg-[#604F6F] text-yatiya-ivory text-[10px] flex items-center justify-center rounded-full font-bold z-10">
-                      {item.quantity}
+          </div>
+
+          {/* RIGHT COLUMN - ORDER SUMMARY */}
+          <div className="w-full lg:w-[45%]">
+            <div className="bg-yatiya-ivory/50 border border-yatiya-light-gold p-6 lg:p-8 sticky top-[100px]">
+              <h2 className="text-lg font-display uppercase tracking-widest mb-6 pb-4 border-b border-yatiya-light-gold/50">Order Summary</h2>
+              
+              <div className="space-y-6 mb-6 pb-6 border-b border-yatiya-light-gold/50 max-h-[40vh] overflow-y-auto pr-2 scrollbar-hide">
+                {checkoutItems.map((item) => (
+                  <div key={item.id} className="flex gap-4">
+                    <div className="w-16 h-20 relative bg-yatiya-ivory border border-yatiya-light-gold shrink-0">
+                      <SmartImage src={item.image} alt={item.title} fill className="object-cover" />
+                      <span className="absolute -top-2 -right-2 w-5 h-5 bg-yatiya-antique-gold text-yatiya-light-text border border-yatiya-antique-gold text-[10px] flex items-center justify-center rounded-full">
+                        {item.quantity}
+                      </span>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-[13px] font-medium text-yatiya-dark-cocoa mb-1">{item.title}</h3>
+                      <p className="text-[11px] text-yatiya-dark-cocoa/60 uppercase">
+                        {item.size && `Size: ${item.size}`} {item.color && `| Color: ${item.color}`}
+                      </p>
+                      {item.customMeasurements && (
+                        <div className="mt-1 text-[10px] text-yatiya-dark-cocoa/50">
+                          Custom Measurements Included
+                        </div>
+                      )}
+                    </div>
+                    <div className="text-[14px] font-medium">
+                      ₹{(item.price * item.quantity).toLocaleString('en-IN')}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Coupon */}
+              <div className="mb-6 pb-6 border-b border-yatiya-light-gold/50">
+                {!appliedCoupon ? (
+                  <div className="flex gap-2">
+                    <input 
+                      type="text" 
+                      placeholder="Discount code (Try YATIYA10)" 
+                      value={couponCode}
+                      onChange={e => setCouponCode(e.target.value)}
+                      className="flex-1 bg-yatiya-cream border border-yatiya-light-gold p-3 text-[13px] focus:outline-none focus:border-yatiya-roman-gold uppercase"
+                    />
+                    <button onClick={handleApplyCoupon} className="bg-yatiya-antique-gold text-yatiya-light-text border border-yatiya-antique-gold px-6 py-3 text-[11px] uppercase tracking-widest hover:bg-yatiya-deep-bronze hover:border-yatiya-deep-bronze hover:text-yatiya-light-text transition-colors">
+                      Apply
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between bg-green-50 border border-green-200 p-3">
+                    <span className="text-[12px] font-medium text-green-800 flex items-center gap-2">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                      {appliedCoupon} applied
                     </span>
+                    <button onClick={handleRemoveCoupon} className="text-[11px] text-green-800 underline hover:text-green-600">Remove</button>
                   </div>
-                  <div className="flex-1">
-                    <p className="text-[13px] font-sans font-medium">{item.title}</p>
-                    <p className="text-[11px] font-sans text-yatiya-black/60 uppercase mt-1">
-                      {item.size && `Size: ${item.size}`} {item.color && `/ Color: ${item.color}`}
-                    </p>
-                  </div>
-                  <div className="text-[13px] font-sans font-medium">
-                    ₹{(item.price * item.quantity).toLocaleString('en-IN')}
-                  </div>
+                )}
+                {errors.coupon && <p className="text-red-500 text-[11px] mt-2">{errors.coupon}</p>}
+              </div>
+
+              {/* Totals */}
+              <div className="space-y-3 mb-6 pb-6 border-b border-yatiya-light-gold/50">
+                <div className="flex justify-between text-[14px]">
+                  <span className="text-yatiya-dark-cocoa/70">Subtotal</span>
+                  <span>₹{subtotal.toLocaleString('en-IN')}</span>
                 </div>
-              ))}
-            </div>
-
-            <div className="flex gap-4 mb-8 pt-6 border-t border-[#E9E3DD]">
-              <input type="text" placeholder="Gift card or discount code" className="flex-1 bg-white border border-[#E9E3DD] p-3 text-[12px] font-sans focus:outline-none focus:border-[#641F32]" />
-              <button className="bg-yatiya-black text-yatiya-ivory px-6 text-[11px] font-sans font-bold tracking-widest uppercase hover:bg-[#641F32] transition-colors">Apply</button>
-            </div>
-
-            <div className="flex flex-col gap-3 text-[13px] font-sans mb-6 border-t border-[#E9E3DD] pt-6">
-              <div className="flex justify-between">
-                <span className="text-yatiya-black/70">Subtotal</span>
-                <span>₹{subtotal.toLocaleString('en-IN')}</span>
+                {discountAmount > 0 && (
+                  <div className="flex justify-between text-[14px] text-green-600">
+                    <span>Discount ({appliedCoupon})</span>
+                    <span>-₹{discountAmount.toLocaleString('en-IN')}</span>
+                  </div>
+                )}
+                <div className="flex justify-between text-[14px]">
+                  <span className="text-yatiya-dark-cocoa/70">Shipping</span>
+                  <span>{shipping === 0 ? 'Free' : `₹${shipping.toLocaleString('en-IN')}`}</span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-yatiya-black/70">Shipping</span>
-                <span>{shipping === 0 ? "Complimentary" : `₹${shipping.toLocaleString('en-IN')}`}</span>
+
+              <div className="flex justify-between text-xl font-display mb-8">
+                <span>Total</span>
+                <span>₹{total.toLocaleString('en-IN')}</span>
+              </div>
+
+              <div className="lg:hidden">
+                <button 
+                  onClick={handlePlaceOrder}
+                  className="w-full bg-yatiya-antique-gold text-yatiya-light-text border border-yatiya-antique-gold py-5 text-[13px] uppercase tracking-[0.2em] font-medium hover:bg-yatiya-deep-bronze hover:border-yatiya-deep-bronze hover:text-yatiya-light-text transition-colors"
+                >
+                  Place Order
+                </button>
               </div>
             </div>
-
-            <div className="flex justify-between items-end border-t border-[#E9E3DD] pt-6">
-              <span className="text-[14px] font-sans font-medium uppercase tracking-widest">Total</span>
-              <div className="text-right flex items-center gap-2">
-                <span className="text-[11px] font-sans text-yatiya-black/50">INR</span>
-                <span className="text-3xl font-display">₹{total.toLocaleString('en-IN')}</span>
-              </div>
-            </div>
-
           </div>
         </div>
-
       </div>
     </div>
+  );
+}
+
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-yatiya-ivory"></div>}>
+      <CheckoutContent />
+    </Suspense>
   );
 }

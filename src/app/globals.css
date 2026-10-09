@@ -1,45 +1,31 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-plum: #604F6F;
-  --color-burgundy: #641F32;
-  --color-wine: #7D3048;
-  --color-emerald: #164A43;
-  --color-royal: #253B70;
-  --color-terracotta: #B17165;
-  --color-champagne: #C7A66A;
-  --color-cream: #F7F0E8;
-  --color-ivory: #FCFAF7;
-  --color-charcoal: #242124;
-  --color-border: #E9E3DD;
-
-  --color-yatiya-black: #080808;
-  --color-yatiya-black-soft: #1C1C1C;
-  --color-yatiya-surface: #F5F0E6;
-  --color-yatiya-gold: #C6A15B;
-  --color-yatiya-gold-light: #D4B878;
-  --color-yatiya-gold-pale: #F0E4C5;
-  --color-yatiya-ivory: #FAF8F2;
-  --color-yatiya-white: #FFFFFF;
-  --color-yatiya-muted: #77736B;
-  --color-yatiya-border: #E7DDCA;
-  --color-yatiya-text: #171717;
-
-  --font-sans: var(--font-sans), sans-serif;
-  --font-display: var(--font-display), serif;
+  --color-yatiya-ivory: #F6F0E4;
+  --color-yatiya-cream: #EFE5D2;
+  --color-yatiya-dark-cocoa: #342719;
+  --color-yatiya-deep-brown: #4A3622;
+  --color-yatiya-roman-gold: #B08D57;
+  --color-yatiya-antique-gold: #A67C45;
+  --color-yatiya-light-gold: #D2B477;
+  --color-yatiya-rich-gold: #C19A5B;
+  --color-yatiya-deep-bronze: #604725;
+  --color-yatiya-muted-text: #6B5740;
+  --color-yatiya-burgundy: #5A2525;
+  --color-yatiya-light-text: #FFF8EA;
+  --font-sans: var(--font-sans), 'Montserrat', sans-serif;
+  --font-display: var(--font-display), 'Cormorant Garamond', serif;
 }
 
 :root {
-  --background: #F8F4EC;
-  --foreground: #2B211B;
+  --background: #F6F0E4;
+  --foreground: #342719;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #F8F4EC;
-    --foreground: #2B211B;
+    --background: #F6F0E4;
+    --foreground: #342719;
   }
 }
 
@@ -47,20 +33,29 @@
   body {
     background-color: var(--background);
     background-image: 
-      radial-gradient(circle at 20% 20%, rgba(255,255,255,0.8), transparent 45%),
-      radial-gradient(circle at 80% 70%, rgba(201,178,124,0.08), transparent 40%),
-      linear-gradient(135deg, #FFFFFF 0%, #F8F4EC 35%, #F3EBDD 65%, #E9DDC8 100%);
+      radial-gradient(circle at 20% 20%, rgba(239,229,210,0.8), transparent 45%),
+      radial-gradient(circle at 80% 70%, rgba(210,180,119,0.15), transparent 40%),
+      linear-gradient(135deg, #F6F0E4 0%, #EFE5D2 35%, #F6F0E4 65%, #F6F0E4 100%);
     background-attachment: fixed;
     color: var(--foreground);
-    font-family: var(--font-sans);
+    font-family: var(--font-sans), 'Montserrat', sans-serif;
+    font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    letter-spacing: 0.01em;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-display);
-    font-weight: 400;
+    font-family: var(--font-display), 'Cormorant Garamond', serif;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    line-height: 1.1;
+  }
+
+  /* Ensure nav/button/label/form elements use Montserrat */
+  nav, button, input, select, textarea, label, .font-sans {
+    font-family: var(--font-sans), 'Montserrat', sans-serif;
   }
 }
 
@@ -76,11 +71,36 @@
   }
   
   .btn-primary {
-    @apply bg-yatiya-gold text-yatiya-black border border-yatiya-gold px-10 py-4 text-[11px] tracking-[0.15em] font-bold uppercase transition-colors duration-300 hover:bg-yatiya-gold-light hover:border-yatiya-gold-light hover:text-yatiya-black;
+    @apply bg-yatiya-antique-gold text-yatiya-light-text border border-yatiya-antique-gold px-10 py-4 text-[11px] tracking-[0.15em] font-medium uppercase transition-colors duration-300 hover:bg-yatiya-deep-bronze hover:border-yatiya-deep-bronze;
+    font-family: var(--font-sans), 'Montserrat', sans-serif;
+    font-weight: 500;
   }
   
   .btn-secondary {
-    @apply bg-transparent border border-yatiya-gold text-yatiya-gold px-10 py-4 text-[11px] tracking-[0.15em] font-bold uppercase transition-colors duration-300 hover:bg-yatiya-gold hover:text-yatiya-black;
+    @apply bg-transparent border border-yatiya-antique-gold text-yatiya-deep-bronze px-10 py-4 text-[11px] tracking-[0.15em] font-medium uppercase transition-colors duration-300 hover:bg-yatiya-cream hover:text-yatiya-deep-bronze;
+    font-family: var(--font-sans), 'Montserrat', sans-serif;
+    font-weight: 500;
+  }
+
+  /* Typography utility classes */
+  .heading-display {
+    font-family: var(--font-display), 'Cormorant Garamond', serif;
+    font-weight: 500;
+  }
+
+  .heading-display-bold {
+    font-family: var(--font-display), 'Cormorant Garamond', serif;
+    font-weight: 600;
+  }
+
+  .text-ui {
+    font-family: var(--font-sans), 'Montserrat', sans-serif;
+    font-weight: 400;
+  }
+
+  .text-ui-medium {
+    font-family: var(--font-sans), 'Montserrat', sans-serif;
+    font-weight: 500;
   }
 }
 

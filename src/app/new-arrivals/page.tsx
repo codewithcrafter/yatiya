@@ -12,7 +12,7 @@ export default function NewArrivalsPage() {
   const newArrivals = products.filter(p => p.isNew);
 
   return (
-    <div className="min-h-screen bg-yatiya-ivory text-yatiya-black">
+    <div className="min-h-screen bg-yatiya-ivory text-yatiya-dark-cocoa">
       {/* HEADER HERO */}
       <div className="w-full h-[35vh] bg-[#B17165] flex flex-col items-center justify-center text-center px-6">
         <h1 className="text-4xl md:text-5xl font-display uppercase tracking-widest text-yatiya-ivory">
@@ -28,14 +28,14 @@ export default function NewArrivalsPage() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-12 md:gap-x-8 md:gap-y-16">
           {newArrivals.map((product) => (
             <div key={product.id} className="flex flex-col group">
-              <Link href={`/product/${product.slug}`} className="w-full aspect-[3/4] relative bg-[#F7F0E8] overflow-hidden mb-4">
+              <Link href={`/product/${product.slug}`} className="w-full aspect-[3/4] relative bg-yatiya-ivory overflow-hidden mb-4">
                 <SmartImage 
                   src={product.images[0]} 
                   alt={product.title} 
                   fill 
                   className="object-cover transition-transform duration-[800ms] group-hover:scale-105" 
                 />
-                <span className="absolute top-4 left-4 bg-white/90 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-yatiya-black">
+                <span className="absolute top-4 left-4 bg-yatiya-cream/90 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-yatiya-dark-cocoa">
                   New
                 </span>
                 {/* QUICK ADD OVERLAY */}
@@ -54,16 +54,16 @@ export default function NewArrivalsPage() {
                     });
                     alert("Added to bag!");
                   }}
-                  className="absolute bottom-0 left-0 w-full bg-yatiya-ivory/95 text-yatiya-black py-4 text-[10px] font-bold uppercase tracking-[0.2em] translate-y-full group-hover:translate-y-0 transition-transform duration-300 hover:bg-yatiya-black hover:text-yatiya-ivory"
+                  className="absolute bottom-0 left-0 w-full bg-yatiya-ivory/95 text-yatiya-dark-cocoa py-4 text-[10px] font-bold uppercase tracking-[0.2em] translate-y-full group-hover:translate-y-0 transition-transform duration-300 hover:bg-yatiya-deep-bronze hover:border-yatiya-deep-bronze hover:text-yatiya-ivory"
                 >
                   Quick Add
                 </button>
               </Link>
               <Link href={`/product/${product.slug}`} className="flex flex-col">
-                <h3 className="text-[13px] md:text-[14px] font-sans font-medium text-yatiya-black group-hover:text-[#641F32] transition-colors mb-1">
+                <h3 className="text-[13px] md:text-[14px] font-sans font-medium text-yatiya-dark-cocoa group-hover:text-yatiya-burgundy transition-colors mb-1">
                   {product.title}
                 </h3>
-                <p className="text-[13px] font-sans text-yatiya-black/70">
+                <p className="text-[13px] font-sans text-yatiya-dark-cocoa/70">
                   ₹{product.price.toLocaleString('en-IN')}
                 </p>
               </Link>

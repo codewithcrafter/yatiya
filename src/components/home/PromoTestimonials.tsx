@@ -114,19 +114,19 @@ export function PromoTestimonials() {
               fill
               className="object-cover opacity-80 transition-transform duration-500 ease-out group-hover:scale-[1.03] object-[center_20%]"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#2B211B]/70 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-yatiya-dark-cocoa/70 to-transparent" />
             
-            <div className="relative z-10 flex flex-col justify-center h-full px-6 md:px-10 max-w-[80%] text-[#3B2A16]">
-              <span className="text-[#C6A15B] text-[10px] md:text-xs font-bold uppercase tracking-widest mb-2 md:mb-3">
+            <div className="relative z-10 flex flex-col justify-center h-full px-6 md:px-10 max-w-[80%] text-yatiya-light-text">
+              <span className="text-yatiya-light-gold text-[10px] md:text-xs font-bold uppercase tracking-widest mb-2 md:mb-3">
                 NEW ARRIVALS
               </span>
               <h3 className="text-2xl md:text-3xl lg:text-[34px] font-display leading-tight mb-2 md:mb-3">
                 UP TO 25% OFF
               </h3>
-              <p className="text-[#F5F0E6] text-xs md:text-sm mb-4 md:mb-6 max-w-[250px] leading-relaxed">
+              <p className="text-yatiya-light-text text-xs md:text-sm mb-4 md:mb-6 max-w-[250px] leading-relaxed">
                 Discover our latest couture collection.
               </p>
-              <span className="text-xs font-bold uppercase tracking-widest hover:text-[#C6A15B] transition-colors flex items-center">
+              <span className="text-xs font-bold uppercase tracking-widest hover:text-yatiya-light-gold transition-colors flex items-center">
                 SHOP NOW <span className="ml-2">→</span>
               </span>
             </div>
@@ -140,19 +140,19 @@ export function PromoTestimonials() {
               fill
               className="object-cover opacity-80 transition-transform duration-500 ease-out group-hover:scale-[1.03] object-[center_30%]"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#2B211B]/70 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-yatiya-dark-cocoa/70 to-transparent" />
             
-            <div className="relative z-10 flex flex-col justify-center h-full px-6 md:px-10 max-w-[80%] text-[#3B2A16]">
-              <span className="text-[#C6A15B] text-[10px] md:text-xs font-bold uppercase tracking-widest mb-2 md:mb-3">
+            <div className="relative z-10 flex flex-col justify-center h-full px-6 md:px-10 max-w-[80%] text-yatiya-light-text">
+              <span className="text-yatiya-light-gold text-[10px] md:text-xs font-bold uppercase tracking-widest mb-2 md:mb-3">
                 SPECIAL OFFER
               </span>
               <h3 className="text-2xl md:text-3xl lg:text-[34px] font-display leading-tight mb-2 md:mb-3">
                 UP TO 35% OFF
               </h3>
-              <p className="text-[#F5F0E6] text-xs md:text-sm mb-4 md:mb-6 max-w-[280px] leading-relaxed">
+              <p className="text-yatiya-light-text text-xs md:text-sm mb-4 md:mb-6 max-w-[280px] leading-relaxed">
                 Exclusive styles crafted for your special moments.
               </p>
-              <span className="text-xs font-bold uppercase tracking-widest hover:text-[#C6A15B] transition-colors flex items-center">
+              <span className="text-xs font-bold uppercase tracking-widest hover:text-yatiya-light-gold transition-colors flex items-center">
                 DISCOVER NOW <span className="ml-2">→</span>
               </span>
             </div>
@@ -165,8 +165,8 @@ export function PromoTestimonials() {
       <div className="mt-[60px] md:mt-[70px]">
         <Reveal direction="up" delay={0.2}>
           <div className="flex flex-col items-center text-center">
-            <h2 className="text-3xl md:text-[34px] font-display text-[#D6BC7A]">Our Clients Say</h2>
-            <div className="w-[60px] h-[2px] bg-yatiya-gold mt-[15px]" />
+            <h2 className="text-3xl md:text-[34px] font-display text-yatiya-deep-brown">Our Clients Say</h2>
+            <div className="w-[60px] h-[2px] bg-yatiya-antique-gold mt-[15px]" />
           </div>
         </Reveal>
 
@@ -186,28 +186,28 @@ export function PromoTestimonials() {
                 className="shrink-0 px-2 md:px-[15px]"
                 style={{ width: `${100 / visibleCount}%` }}
               >
-                <div className="bg-[#F8F4EC] border border-[rgba(198,161,91,0.30)] shadow-[0_4px_20px_rgba(0,0,0,0.04)] rounded-md p-6 md:p-8 flex flex-col items-center text-center h-full">
+                <div className="bg-yatiya-ivory border border-[rgba(198,161,91,0.30)] shadow-[0_4px_20px_rgba(0,0,0,0.04)] rounded-md p-6 md:p-8 flex flex-col items-center text-center h-full">
                   
                   {/* Avatar */}
-                  <div className="w-[60px] h-[60px] md:w-[70px] md:h-[70px] rounded-full bg-transparent border border-[#C6A15B] flex items-center justify-center text-[#C6A15B] font-display text-xl mb-4 shrink-0">
+                  <div className="w-[60px] h-[60px] md:w-[70px] md:h-[70px] rounded-full bg-transparent border border-yatiya-antique-gold flex items-center justify-center text-yatiya-antique-gold font-display text-xl mb-4 shrink-0">
                     {testimonial.initials}
                   </div>
                   
                   {/* Name & Role */}
-                  <h4 className="text-[#D6BC7A] font-semibold text-[15px] md:text-base">
+                  <h4 className="text-yatiya-deep-brown font-semibold text-[15px] md:text-base">
                     {testimonial.name}
                   </h4>
-                  <span className="text-[#A9956A] text-xs font-medium uppercase tracking-wider mt-1 mb-5 block">
+                  <span className="text-yatiya-warm-bronze text-xs font-medium uppercase tracking-wider mt-1 mb-5 block">
                     {testimonial.role}
                   </span>
                   
                   {/* Review */}
-                  <p className="text-[#CFC6B5] text-sm md:text-[15px] leading-relaxed italic mb-6 grow">
+                  <p className="text-yatiya-deep-brown/80 text-sm md:text-[15px] leading-relaxed italic mb-6 grow">
                     "{testimonial.review}"
                   </p>
                   
                   {/* Rating */}
-                  <div className="flex items-center text-[#C6A15B] gap-1 shrink-0 mt-auto">
+                  <div className="flex items-center text-yatiya-rich-gold gap-1 shrink-0 mt-auto">
                     {[...Array(testimonial.rating)].map((_, i) => (
                       <Star key={i} className="w-3.5 h-3.5 fill-current" />
                     ))}
@@ -227,8 +227,8 @@ export function PromoTestimonials() {
               onClick={() => setActiveIndex(idx)}
               className={`transition-all duration-300 rounded-full ${
                 activeIndex === idx 
-                  ? "w-[24px] h-[6px] bg-yatiya-gold" 
-                  : "w-[6px] h-[6px] bg-[#555555] hover:bg-yatiya-gold/60"
+                  ? "w-[24px] h-[6px] bg-yatiya-antique-gold" 
+                  : "w-[6px] h-[6px] bg-yatiya-deep-brown hover:bg-yatiya-antique-gold/60"
               }`}
               aria-label={`Go to slide ${idx + 1}`}
             />
